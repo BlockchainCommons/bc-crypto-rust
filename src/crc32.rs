@@ -26,12 +26,13 @@ pub fn crc32_data(data: &[u8]) -> Vec<u8> {
 #[cfg(test)]
 mod tests {
     use crate::{crc32, crc32_data, crc32_data_opt};
+    use hex_literal::hex;
 
     #[test]
     fn test_crc32() {
         let input = "Hello, world!".as_bytes();
         assert_eq!(crc32(input), 0xebe6c6e6);
-        assert_eq!(crc32_data(input), hex_literal::hex!("ebe6c6e6"));
-        assert_eq!(crc32_data_opt(input, true), hex_literal::hex!("e6c6e6eb"));
+        assert_eq!(crc32_data(input), hex!("ebe6c6e6"));
+        assert_eq!(crc32_data_opt(input, true), hex!("e6c6e6eb"));
     }
 }

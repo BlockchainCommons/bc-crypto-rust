@@ -12,12 +12,13 @@ pub fn sha256(data: &[u8]) -> [u8; 32] {
 #[cfg(test)]
 mod tests {
     use crate::sha256;
+    use hex_literal::hex;
 
     #[test]
     fn test_sha256() {
         let input = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
         let expected =
-            hex_literal::hex!("248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1");
+            hex!("248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1");
         let result = sha256(input.as_bytes());
         assert_eq!(result, expected);
     }
