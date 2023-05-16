@@ -24,6 +24,10 @@ impl SeededRandomNumberGenerator {
 }
 
 impl RandomNumberGenerator for SeededRandomNumberGenerator {
+    fn next_u64(&mut self) -> u64 {
+        self.rng.next_u64()
+    }
+
     fn random_data(&mut self, size: usize) -> Vec<u8> {
         // This might not be the most efficient implementation,
         // but it works the same as the Swift version.
@@ -45,7 +49,7 @@ pub fn fake_random_data(size: usize) -> Vec<u8> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{fake_random_data, SeededRandomNumberGenerator};
+    use crate::{fake_random_data, SeededRandomNumberGenerator, RandomNumberGenerator};
 
     const TEST_SEED: [u64; 4] = [17295166580085024720, 422929670265678780, 5577237070365765850, 7953171132032326923];
 
@@ -67,5 +71,11 @@ mod tests {
     #[test]
     fn test_fake_random_data() {
         assert_eq!(fake_random_data(100), hex_literal::hex!("7eb559bbbf6cce2632cf9f194aeb50943de7e1cbad54dcfab27a42759f5e2fed518684c556472008a67932f7c682125b50cb72e8216f6906358fdaf28d3545532daee0c5bb5023f50cd8e71ec14901ac746c576c481b893be6656b80622b3a564e59b4e2"));
+    }
+
+    #[test]
+    fn text_next_with_upper_bound() {
+        let mut rng = SeededRandomNumberGenerator::new(TEST_SEED);
+        println!("{}", rng.next_with_upper_bound(100u32));
     }
 }

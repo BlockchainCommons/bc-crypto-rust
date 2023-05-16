@@ -1,3 +1,5 @@
+#![feature(bigint_helper_methods)]
+
 mod sha256;
 pub use sha256::sha256;
 
@@ -12,3 +14,6 @@ pub use secure_random::{SecureRandomNumberGenerator, random_data};
 
 mod seeded_random;
 pub use seeded_random::{SeededRandomNumberGenerator, fake_random_data, make_fake_random_number_generator};
+
+mod magnitude;
+mod widening;

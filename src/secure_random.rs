@@ -44,15 +44,25 @@ pub fn random_data(size: usize) -> Vec<u8> {
     data
 }
 
+pub fn next_u64() -> u64 {
+    let mut rng_guard = LAZY_RNG.get_rng();
+    let rng = rng_guard.as_mut().expect("RNG was not initialized");
+    rng.next_u64()
+}
+
 pub struct SecureRandomNumberGenerator;
 
 impl SecureRandomNumberGenerator {
-    pub fn new() -> Self {
+    pub fn shared() -> Self {
         Self
     }
 }
 
 impl RandomNumberGenerator for SecureRandomNumberGenerator {
+    fn next_u64(&mut self) -> u64 {
+        next_u64()
+    }
+    
     fn random_data(&mut self, size: usize) -> Vec<u8> {
         random_data(size)
     }
