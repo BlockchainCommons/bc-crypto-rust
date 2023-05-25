@@ -44,6 +44,12 @@ pub fn random_data(size: usize) -> Vec<u8> {
     data
 }
 
+pub fn fill_random_data(data: &mut [u8]) {
+    let mut rng_guard = LAZY_RNG.get_rng();
+    let rng = rng_guard.as_mut().expect("RNG was not initialized");
+    rng.fill_bytes(data);
+}
+
 pub fn next_u64() -> u64 {
     let mut rng_guard = LAZY_RNG.get_rng();
     let rng = rng_guard.as_mut().expect("RNG was not initialized");
@@ -62,7 +68,7 @@ impl RandomNumberGenerator for SecureRandomNumberGenerator {
     fn next_u64(&mut self) -> u64 {
         next_u64()
     }
-    
+
     fn random_data(&mut self, size: usize) -> Vec<u8> {
         random_data(size)
     }

@@ -1,6 +1,6 @@
 #[derive(Clone, Debug)]
 pub enum CryptoError {
-    DecryptionError
+    DecryptFailed
 }
 
 impl std::fmt::Display for CryptoError {

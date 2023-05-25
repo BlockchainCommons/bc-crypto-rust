@@ -19,7 +19,8 @@ pub use random_number_generator::RandomNumberGenerator;
 mod secure_random;
 pub use secure_random::{
     SecureRandomNumberGenerator,
-    random_data
+    random_data,
+    fill_random_data
 };
 
 mod seeded_random;
