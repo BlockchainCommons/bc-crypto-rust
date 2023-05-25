@@ -31,11 +31,7 @@ impl RandomNumberGenerator for SeededRandomNumberGenerator {
     fn random_data(&mut self, size: usize) -> Vec<u8> {
         // This might not be the most efficient implementation,
         // but it works the same as the Swift version.
-        let mut data = vec![0u8; size];
-        for i in 0..size {
-            data[i] = self.next_u64() as u8;
-        }
-        data
+        (0..size).map(|_| self.next_u64() as u8).collect()
     }
 }
 
