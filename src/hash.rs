@@ -141,8 +141,8 @@ mod tests {
     fn test_hmac_sha() {
         let key = hex!("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
         let message = b"Hi There";
-        assert_eq!(hmac_sha256(&key, &message), hex!("b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7"));
-        assert_eq!(hmac_sha512(&key, &message), hex!("87aa7cdea5ef619d4ff0b4241a1d6cb02379f4e2ce4ec2787ad0b30545e17cdedaa833b7d6b8a702038b274eaea3f4e4be9d914eeb61f1702e696c203a126854"));
+        assert_eq!(hmac_sha256(key, message), hex!("b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7"));
+        assert_eq!(hmac_sha512(key, message), hex!("87aa7cdea5ef619d4ff0b4241a1d6cb02379f4e2ce4ec2787ad0b30545e17cdedaa833b7d6b8a702038b274eaea3f4e4be9d914eeb61f1702e696c203a126854"));
     }
 
     #[test]
@@ -154,6 +154,6 @@ mod tests {
     fn test_hkdf_hmac_sha256() {
         let key_material = b"hello";
         let salt = hex!("8e94ef805b93e683ff18");
-        assert_eq!(super::hkdf_hmac_sha256(&key_material, &salt, 32), hex!("13485067e21af17c0900f70d885f02593c0e61e46f86450e4a0201a54c14db76"));
+        assert_eq!(super::hkdf_hmac_sha256(key_material, salt, 32), hex!("13485067e21af17c0900f70d885f02593c0e61e46f86450e4a0201a54c14db76"));
     }
 }
