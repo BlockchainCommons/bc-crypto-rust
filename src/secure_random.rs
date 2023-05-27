@@ -72,6 +72,10 @@ impl RandomNumberGenerator for SecureRandomNumberGenerator {
     fn random_data(&mut self, size: usize) -> Vec<u8> {
         random_data(size)
     }
+
+    fn fill_random_data(&mut self, data: &mut [u8]) {
+        fill_random_data(data)
+    }
 }
 
 #[cfg(test)]

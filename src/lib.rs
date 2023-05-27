@@ -5,6 +5,9 @@ mod widening;
 
 pub mod hash;
 
+mod memzero;
+pub use memzero::{memzero, memzero_vec_vec_u8};
+
 mod symmetric_encryption;
 pub use symmetric_encryption::{
     encrypt_aead_chacha20_poly1305_with_aad,

@@ -14,6 +14,9 @@ pub trait RandomNumberGenerator {
     // Returns a vector of random bytes of the given size.
     fn random_data(&mut self, size: usize) -> Vec<u8>;
 
+    // Fills the given buffer with random bytes.
+    fn fill_random_data(&mut self, data: &mut [u8]);
+
     /// Returns a random value that is less than the given upper bound.
     ///
     /// Use this method when you need random binary data to generate another

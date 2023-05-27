@@ -33,6 +33,10 @@ impl RandomNumberGenerator for SeededRandomNumberGenerator {
         // but it works the same as the Swift version.
         (0..size).map(|_| self.next_u64() as u8).collect()
     }
+
+    fn fill_random_data(&mut self, data: &mut [u8]) {
+        data.iter_mut().for_each(|x| *x = self.next_u64() as u8);
+    }
 }
 
 pub fn make_fake_random_number_generator() -> impl RandomNumberGenerator {
@@ -70,8 +74,18 @@ mod tests {
     }
 
     #[test]
-    fn text_next_with_upper_bound() {
+    fn test_next_with_upper_bound() {
         let mut rng = SeededRandomNumberGenerator::new(TEST_SEED);
         println!("{}", rng.next_with_upper_bound(100u32));
+    }
+
+    #[test]
+    fn test_fill_random_data() {
+        let mut rng = SeededRandomNumberGenerator::new(TEST_SEED);
+        let v1 = rng.random_data(100);
+        let mut rng = SeededRandomNumberGenerator::new(TEST_SEED);
+        let mut v2 = [0u8; 100];
+        rng.fill_random_data(&mut v2);
+        assert_eq!(v1, v2);
     }
 }
