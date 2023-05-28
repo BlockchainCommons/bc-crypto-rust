@@ -1,6 +1,6 @@
 use chacha20poly1305::{ChaCha20Poly1305, KeyInit, AeadInPlace};
 
-use crate::CryptoError;
+use crate::Error;
 
 pub fn encrypt_aead_chacha20_poly1305_with_aad<D1, D2, D3, D4>(
     plaintext: D1,
@@ -39,7 +39,7 @@ pub fn decrypt_aead_chacha20_poly1305_with_aad<D1, D2, D3, D4, D5>(
     nonce: D3,
     aad: D4,
     auth: D5
-) -> Result<Vec<u8>, CryptoError>
+) -> Result<Vec<u8>, Error>
     where
         D1: AsRef<[u8]>,
         D2: AsRef<[u8]>,
@@ -49,7 +49,7 @@ pub fn decrypt_aead_chacha20_poly1305_with_aad<D1, D2, D3, D4, D5>(
 {
     let cipher = ChaCha20Poly1305::new(key.as_ref().into());
     let mut buffer = ciphertext.as_ref().to_vec();
-    cipher.decrypt_in_place_detached(nonce.as_ref().into(), aad.as_ref(), &mut buffer, auth.as_ref().into()).map_err(|_| CryptoError::DecryptFailed)?;
+    cipher.decrypt_in_place_detached(nonce.as_ref().into(), aad.as_ref(), &mut buffer, auth.as_ref().into()).map_err(|_| Error::DecryptFailed)?;
     Ok(buffer)
 }
 
@@ -58,7 +58,7 @@ pub fn decrypt_aead_chacha20_poly1305<D1, D2, D3, D4>(
     key: D2,
     nonce: D3,
     auth: D4
-) -> Result<Vec<u8>, CryptoError>
+) -> Result<Vec<u8>, Error>
     where
         D1: AsRef<[u8]>,
         D2: AsRef<[u8]>,

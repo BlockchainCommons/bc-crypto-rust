@@ -33,5 +33,5 @@ pub use seeded_random::{
     make_fake_random_number_generator
 };
 
-mod crypto_error;
-pub use crypto_error::CryptoError;
+mod error;
+pub use error::Error;
