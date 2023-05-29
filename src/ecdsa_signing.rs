@@ -33,7 +33,7 @@ pub fn ecdsa_verify<D1, D2, D3>(public_key: D1, message: D2, signature: D3) -> b
 
 #[cfg(test)]
 mod tests {
-    use crate::{ecdsa_derive_public_key, ecdsa_sign, ecdsa_verify, make_fake_random_number_generator, ecdsa_new_private_key_using};
+    use crate::{ecdsa_public_key_from_private_key, ecdsa_sign, ecdsa_verify, make_fake_random_number_generator, ecdsa_new_private_key_using};
     use hex_literal::hex;
 
     const MESSAGE: &[u8] = b"Ladies and Gentlemen of the class of '99: If I could offer you only one tip for the future, sunscreen would be it.";
@@ -42,7 +42,7 @@ mod tests {
     fn test_ecdsa_signing() {
         let mut rng = make_fake_random_number_generator();
         let private_key = ecdsa_new_private_key_using(&mut rng);
-        let public_key = ecdsa_derive_public_key(private_key);
+        let public_key = ecdsa_public_key_from_private_key(private_key);
         let signature = ecdsa_sign(private_key, MESSAGE);
         assert_eq!(signature, hex!("e75702ed8f645ce7fe510507b2403029e461ef4570d12aa440e4f81385546a13740b7d16878ff0b46b1cbe08bc218ccb0b00937b61c4707de2ca6148508e51fb"));
         assert!(ecdsa_verify(public_key, MESSAGE, &signature));

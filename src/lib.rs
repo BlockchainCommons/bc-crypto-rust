@@ -2,7 +2,9 @@
 
 pub const ECDSA_PRIVATE_KEY_LENGTH: usize = 32;
 pub const ECDSA_PUBLIC_KEY_LENGTH: usize = 33;
-pub const ECDAS_PUBLIC_KEY_LENGTH_UNCOMPRESSED: usize = 65;
+pub const ECDSA_PUBLIC_KEY_LENGTH_UNCOMPRESSED: usize = 65;
+pub const X25519_PRIVATE_KEY_LENGTH: usize = 32;
+pub const X25519_PUBLIC_KEY_LENGTH: usize = 32;
 
 mod magnitude;
 mod widening;
@@ -20,11 +22,21 @@ pub use symmetric_encryption::{
     decrypt_aead_chacha20_poly1305
 };
 
+mod public_key_encryption;
+pub use public_key_encryption:: {
+    x25519_new_agreement_private_key,
+    x25519_new_agreement_private_key_using,
+    x25519_agreement_public_key_from_private_key,
+    x25519_derive_agreement_private_key,
+    x25519_derive_signing_private_key,
+    x25519_derive_agreement_shared_key,
+};
+
 mod ecdsa_keys;
 pub use ecdsa_keys::{
     ecdsa_new_private_key,
     ecdsa_new_private_key_using,
-    ecdsa_derive_public_key,
+    ecdsa_public_key_from_private_key,
     ecdsa_decompress_public_key,
     ecdsa_compress_public_key,
     ecdsa_derive_private_key,

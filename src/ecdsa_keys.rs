@@ -10,7 +10,7 @@ pub fn ecdsa_new_private_key_using(rng: &mut impl RandomNumberGenerator) -> [u8;
     rng.random_data(ECDSA_PRIVATE_KEY_LENGTH).try_into().unwrap()
 }
 
-pub fn ecdsa_derive_public_key<D>(private_key: D) -> [u8; PUBLIC_KEY_SIZE]
+pub fn ecdsa_public_key_from_private_key<D>(private_key: D) -> [u8; PUBLIC_KEY_SIZE]
     where D: AsRef<[u8]>
 {
     let secp = Secp256k1::new();
@@ -53,7 +53,7 @@ pub fn x_only_public_key_from_private_key<D>(private_key: D) -> [u8; SCHNORR_PUB
 
 #[cfg(test)]
 mod tests {
-    use crate::{ecdsa_derive_public_key, make_fake_random_number_generator, ecdsa_new_private_key_using, ecdsa_decompress_public_key, ecdsa_compress_public_key, x_only_public_key_from_private_key};
+    use crate::{ecdsa_public_key_from_private_key, make_fake_random_number_generator, ecdsa_new_private_key_using, ecdsa_decompress_public_key, ecdsa_compress_public_key, x_only_public_key_from_private_key, ecdsa_derive_private_key};
     use hex_literal::hex;
 
     #[test]
@@ -61,7 +61,7 @@ mod tests {
         let mut rng = make_fake_random_number_generator();
         let private_key = ecdsa_new_private_key_using(&mut rng);
         assert_eq!(private_key, hex!("7eb559bbbf6cce2632cf9f194aeb50943de7e1cbad54dcfab27a42759f5e2fed"));
-        let public_key = ecdsa_derive_public_key(private_key);
+        let public_key = ecdsa_public_key_from_private_key(private_key);
         assert_eq!(public_key, hex!("0271b92b6212a79b9215f1d24efb9e6294a1bedc95b6c8cf187cb94771ca02626b"));
         let decompressed = ecdsa_decompress_public_key(public_key);
         assert_eq!(decompressed, hex!("0471b92b6212a79b9215f1d24efb9e6294a1bedc95b6c8cf187cb94771ca02626b72325f1f3bb69a44d3f1cb6d1fd488220dd502f49c0b1a46cb91ce3718d8334a"));
@@ -69,5 +69,8 @@ mod tests {
         assert_eq!(compressed, public_key);
         let x_only_public_key = x_only_public_key_from_private_key(private_key);
         assert_eq!(x_only_public_key, hex!("71b92b6212a79b9215f1d24efb9e6294a1bedc95b6c8cf187cb94771ca02626b"));
+
+        let private_key = ecdsa_derive_private_key(b"password");
+        assert_eq!(private_key, hex!("05cc550daa75058e613e606d9898fedf029e395911c43273a208b7e0e88e271b"));
     }
 }

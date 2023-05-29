@@ -24,6 +24,11 @@ num-traits = "0.2.15"
 chacha20poly1305 = "0.10.1"
 #k256 = {version = "0.13.1", default-features = false, features = ["ecdsa", "arithmetic"]}
 secp256k1 = "0.27.0"
+# The last version of `x25519-dalek` published has a version pin of `zeroize`=1.3, which conflicts
+# with the version required by `chacha20poly1305`. So we're temporarily using a pre-release
+# tag of `x25519-dalek` version 2.
+#x25519-dalek = "1.2.0"
+x25519-dalek = { git = "https://github.com/dalek-cryptography/x25519-dalek.git", tag = "2.0.0-pre.1" }
 
 [dev-dependencies]
 hex-literal = "0.4.1"
