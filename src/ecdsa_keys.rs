@@ -10,29 +10,37 @@ pub fn ecdsa_new_private_key_using(rng: &mut impl RandomNumberGenerator) -> Vec<
     rng.random_data(ECDSA_PRIVATE_KEY_LENGTH)
 }
 
-pub fn ecdsa_derive_public_key(private_key: &[u8]) -> Vec<u8> {
+pub fn ecdsa_derive_public_key<D>(private_key: D) -> Vec<u8>
+    where D: AsRef<[u8]>
+{
     let secp = Secp256k1::new();
-    let private_key = SecretKey::from_slice(private_key)
+    let private_key = SecretKey::from_slice(private_key.as_ref())
         .expect("32 bytes, within curve order");
     let public_key = PublicKey::from_secret_key(&secp, &private_key);
     public_key.serialize().to_vec()
 }
 
-pub fn ecdsa_decompress_public_key(compressed_public_key: &[u8]) -> Vec<u8> {
-    let public_key = PublicKey::from_slice(compressed_public_key)
+pub fn ecdsa_decompress_public_key<D>(compressed_public_key: D) -> Vec<u8>
+    where D: AsRef<[u8]>
+{
+    let public_key = PublicKey::from_slice(compressed_public_key.as_ref())
         .expect("65 bytes, serialized according to the spec");
     let public_key = public_key.serialize_uncompressed();
     public_key.to_vec()
 }
 
-pub fn ecdsa_compress_public_key(uncompressed_public_key: &[u8]) -> Vec<u8> {
-    let public_key = PublicKey::from_slice(uncompressed_public_key)
+pub fn ecdsa_compress_public_key<D>(uncompressed_public_key: D) -> Vec<u8>
+    where D: AsRef<[u8]>
+{
+    let public_key = PublicKey::from_slice(uncompressed_public_key.as_ref())
         .expect("33 bytes, serialized according to the spec");
     let public_key = public_key.serialize();
     public_key.to_vec()
 }
 
-pub fn ecdsa_derive_private_key(key_material: &[u8]) -> Vec<u8> {
+pub fn ecdsa_derive_private_key<D>(key_material: D) -> Vec<u8>
+    where D: AsRef<[u8]>
+{
     hkdf_hmac_sha256(key_material, "signing".as_bytes(), 32)
 }
 
