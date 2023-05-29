@@ -46,6 +46,11 @@ pub fn sha256<D>(data: D) -> [u8; 32]
     hash
 }
 
+/// Computes the double SHA-256 digest of the input buffer.
+pub fn double_sha256(message: &[u8]) -> [u8; 32] {
+    sha256(sha256(message))
+}
+
 /// Computes the SHA-512 digest of the input buffer.
 pub fn sha512<D>(data: D) -> [u8; 64]
     where D: AsRef<[u8]>

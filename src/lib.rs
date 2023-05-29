@@ -1,5 +1,9 @@
 #![feature(bigint_helper_methods)]
 
+pub const ECDSA_PRIVATE_KEY_LENGTH: usize = 32;
+pub const ECDSA_PUBLIC_KEY_LENGTH: usize = 33;
+pub const ECDAS_PUBLIC_KEY_LENGTH_UNCOMPRESSED: usize = 65;
+
 mod magnitude;
 mod widening;
 
@@ -14,6 +18,15 @@ pub use symmetric_encryption::{
     encrypt_aead_chacha20_poly1305,
     decrypt_aead_chacha20_poly1305_with_aad,
     decrypt_aead_chacha20_poly1305
+};
+
+mod ecdsa_signing;
+pub use ecdsa_signing::{
+    ecdsa_new_private_key,
+    ecdsa_new_private_key_using,
+    ecdsa_derive_public_key,
+    ecdsa_sign,
+    ecdsa_verify,
 };
 
 mod random_number_generator;
