@@ -20,11 +20,15 @@ pub use symmetric_encryption::{
     decrypt_aead_chacha20_poly1305
 };
 
-mod ecdsa_signing;
-pub use ecdsa_signing::{
+mod ecdsa_keys;
+pub use ecdsa_keys::{
     ecdsa_new_private_key,
     ecdsa_new_private_key_using,
     ecdsa_derive_public_key,
+};
+
+mod ecdsa_signing;
+pub use ecdsa_signing::{
     ecdsa_sign,
     ecdsa_verify,
 };
