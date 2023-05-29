@@ -42,8 +42,8 @@ mod tests {
     fn test_ecdsa_signing() {
         let mut rng = make_fake_random_number_generator();
         let private_key = ecdsa_new_private_key_using(&mut rng);
-        let public_key = ecdsa_derive_public_key(&private_key);
-        let signature = ecdsa_sign(&private_key, MESSAGE);
+        let public_key = ecdsa_derive_public_key(private_key);
+        let signature = ecdsa_sign(private_key, MESSAGE);
         assert_eq!(signature, hex!("e75702ed8f645ce7fe510507b2403029e461ef4570d12aa440e4f81385546a13740b7d16878ff0b46b1cbe08bc218ccb0b00937b61c4707de2ca6148508e51fb"));
         assert!(ecdsa_verify(public_key, MESSAGE, &signature));
     }

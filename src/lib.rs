@@ -41,7 +41,7 @@ mod schnorr_signing;
 pub use schnorr_signing::{
     schnorr_sign,
     schnorr_sign_using,
-    // schnorr_verify,
+    schnorr_verify,
 };
 
 mod random_number_generator;
