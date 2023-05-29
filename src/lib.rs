@@ -27,13 +27,21 @@ pub use ecdsa_keys::{
     ecdsa_derive_public_key,
     ecdsa_decompress_public_key,
     ecdsa_compress_public_key,
-    ecdsa_derive_private_key
+    ecdsa_derive_private_key,
+    x_only_public_key_from_private_key,
 };
 
 mod ecdsa_signing;
 pub use ecdsa_signing::{
     ecdsa_sign,
     ecdsa_verify,
+};
+
+mod schnorr_signing;
+pub use schnorr_signing::{
+    schnorr_sign,
+    schnorr_sign_using,
+    // schnorr_verify,
 };
 
 mod random_number_generator;
