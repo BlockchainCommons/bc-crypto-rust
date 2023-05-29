@@ -25,6 +25,9 @@ pub use ecdsa_keys::{
     ecdsa_new_private_key,
     ecdsa_new_private_key_using,
     ecdsa_derive_public_key,
+    ecdsa_decompress_public_key,
+    ecdsa_compress_public_key,
+    ecdsa_derive_private_key
 };
 
 mod ecdsa_signing;
