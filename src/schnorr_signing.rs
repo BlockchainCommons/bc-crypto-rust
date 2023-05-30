@@ -61,7 +61,7 @@ pub fn schnorr_verify<D1, D2, D3, D4>(message: D1, tag: D2, schnorr_signature: D
 
 #[cfg(test)]
 mod tests {
-    use crate::{make_fake_random_number_generator, schnorr_sign_using, ecdsa_new_private_key_using, x_only_public_key_from_private_key, schnorr_verify};
+    use crate::{make_fake_random_number_generator, schnorr_sign_using, ecdsa_new_private_key_using, schnorr_public_key_from_private_key, schnorr_verify};
 
     use super::tagged_sha256;
     use hex_literal::hex;
@@ -81,7 +81,7 @@ mod tests {
         let sig = schnorr_sign_using(message, tag, private_key, &mut rng);
         assert_eq!(sig.len(), 64);
         assert_eq!(sig, hex!("d7488b8f2107c468b4c75a59f9cf1f9945fe7742229a186baa005dcfd434720183958fde5aa34045fea71793710e56b160cf74400b90580ed58ce95d8fa92b45"));
-        let x_only_public_key = x_only_public_key_from_private_key(private_key);
+        let x_only_public_key = schnorr_public_key_from_private_key(private_key);
         assert!(schnorr_verify(message, tag, &sig, x_only_public_key));
     }
 }

@@ -1,13 +1,13 @@
-use secp256k1::{Secp256k1, SecretKey, PublicKey, KeyPair, constants::{PUBLIC_KEY_SIZE, SECRET_KEY_SIZE, UNCOMPRESSED_PUBLIC_KEY_SIZE, SCHNORR_PUBLIC_KEY_SIZE}};
+use secp256k1::{Secp256k1, SecretKey, PublicKey, KeyPair, constants::{PUBLIC_KEY_SIZE, SECRET_KEY_SIZE, UNCOMPRESSED_PUBLIC_KEY_SIZE}};
 
-use crate::{ECDSA_PRIVATE_KEY_LENGTH, RandomNumberGenerator, SecureRandomNumberGenerator, hash::hkdf_hmac_sha256};
+use crate::{ECDSA_PRIVATE_KEY_SIZE, RandomNumberGenerator, SecureRandomNumberGenerator, hash::hkdf_hmac_sha256, SCHNORR_PUBLIC_KEY_SIZE};
 
 pub fn ecdsa_new_private_key() -> [u8; 32] {
     ecdsa_new_private_key_using(&mut SecureRandomNumberGenerator)
 }
 
 pub fn ecdsa_new_private_key_using(rng: &mut impl RandomNumberGenerator) -> [u8; SECRET_KEY_SIZE] {
-    rng.random_data(ECDSA_PRIVATE_KEY_LENGTH).try_into().unwrap()
+    rng.random_data(ECDSA_PRIVATE_KEY_SIZE).try_into().unwrap()
 }
 
 pub fn ecdsa_public_key_from_private_key<D>(private_key: D) -> [u8; PUBLIC_KEY_SIZE]
@@ -42,7 +42,7 @@ pub fn ecdsa_derive_private_key<D>(key_material: D) -> Vec<u8>
     hkdf_hmac_sha256(key_material, "signing".as_bytes(), 32)
 }
 
-pub fn x_only_public_key_from_private_key<D>(private_key: D) -> [u8; SCHNORR_PUBLIC_KEY_SIZE]
+pub fn schnorr_public_key_from_private_key<D>(private_key: D) -> [u8; SCHNORR_PUBLIC_KEY_SIZE]
     where D: AsRef<[u8]>
 {
     let secp = Secp256k1::new();
@@ -53,7 +53,7 @@ pub fn x_only_public_key_from_private_key<D>(private_key: D) -> [u8; SCHNORR_PUB
 
 #[cfg(test)]
 mod tests {
-    use crate::{ecdsa_public_key_from_private_key, make_fake_random_number_generator, ecdsa_new_private_key_using, ecdsa_decompress_public_key, ecdsa_compress_public_key, x_only_public_key_from_private_key, ecdsa_derive_private_key};
+    use crate::{ecdsa_public_key_from_private_key, make_fake_random_number_generator, ecdsa_new_private_key_using, ecdsa_decompress_public_key, ecdsa_compress_public_key, schnorr_public_key_from_private_key, ecdsa_derive_private_key};
     use hex_literal::hex;
 
     #[test]
@@ -67,7 +67,7 @@ mod tests {
         assert_eq!(decompressed, hex!("0471b92b6212a79b9215f1d24efb9e6294a1bedc95b6c8cf187cb94771ca02626b72325f1f3bb69a44d3f1cb6d1fd488220dd502f49c0b1a46cb91ce3718d8334a"));
         let compressed = ecdsa_compress_public_key(decompressed);
         assert_eq!(compressed, public_key);
-        let x_only_public_key = x_only_public_key_from_private_key(private_key);
+        let x_only_public_key = schnorr_public_key_from_private_key(private_key);
         assert_eq!(x_only_public_key, hex!("71b92b6212a79b9215f1d24efb9e6294a1bedc95b6c8cf187cb94771ca02626b"));
 
         let private_key = ecdsa_derive_private_key(b"password");

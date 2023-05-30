@@ -1,10 +1,11 @@
 #![feature(bigint_helper_methods)]
 
-pub const ECDSA_PRIVATE_KEY_LENGTH: usize = 32;
-pub const ECDSA_PUBLIC_KEY_LENGTH: usize = 33;
-pub const ECDSA_PUBLIC_KEY_LENGTH_UNCOMPRESSED: usize = 65;
-pub const X25519_PRIVATE_KEY_LENGTH: usize = 32;
-pub const X25519_PUBLIC_KEY_LENGTH: usize = 32;
+pub const ECDSA_PRIVATE_KEY_SIZE: usize = 32;
+pub const ECDSA_PUBLIC_KEY_SIZE: usize = 33;
+pub const ECDSA_UNCOMPRESSED_PUBLIC_KEY_SIZE: usize = 65;
+pub const SCHNORR_PUBLIC_KEY_SIZE: usize = 32;
+pub const X25519_PRIVATE_KEY_SIZE: usize = 32;
+pub const X25519_PUBLIC_KEY_SIZE: usize = 32;
 
 mod magnitude;
 mod widening;
@@ -40,7 +41,7 @@ pub use ecdsa_keys::{
     ecdsa_decompress_public_key,
     ecdsa_compress_public_key,
     ecdsa_derive_private_key,
-    x_only_public_key_from_private_key,
+    schnorr_public_key_from_private_key,
 };
 
 mod ecdsa_signing;
