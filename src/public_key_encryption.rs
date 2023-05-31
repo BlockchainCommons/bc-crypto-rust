@@ -11,16 +11,16 @@ pub fn x25519_agreement_public_key_from_private_key(agreement_private_key: &[u8;
     pk.as_bytes().to_owned()
 }
 
-pub fn x25519_derive_agreement_private_key<D>(key_material: D) -> Vec<u8>
+pub fn x25519_derive_agreement_private_key<D>(key_material: D) -> [u8; X25519_PRIVATE_KEY_SIZE]
     where D: AsRef<[u8]>
 {
-    hkdf_hmac_sha256(key_material, "agreement".as_bytes(), X25519_PRIVATE_KEY_SIZE)
+    hkdf_hmac_sha256(key_material, "agreement".as_bytes(), X25519_PRIVATE_KEY_SIZE).try_into().unwrap()
 }
 
-pub fn x25519_derive_signing_private_key<D>(key_material: D) -> Vec<u8>
+pub fn x25519_derive_signing_private_key<D>(key_material: D) -> [u8; X25519_PRIVATE_KEY_SIZE]
     where D: AsRef<[u8]>
 {
-    hkdf_hmac_sha256(key_material, "signing".as_bytes(), X25519_PRIVATE_KEY_SIZE)
+    hkdf_hmac_sha256(key_material, "signing".as_bytes(), X25519_PRIVATE_KEY_SIZE).try_into().unwrap()
 }
 
 pub fn x25519_derive_agreement_shared_key(agreement_private_key: &[u8; X25519_PRIVATE_KEY_SIZE], agreement_public_key: &[u8; X25519_PUBLIC_KEY_SIZE]) -> Vec<u8> {
