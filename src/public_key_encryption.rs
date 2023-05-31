@@ -1,9 +1,5 @@
-use crate::{secure_random, RandomNumberGenerator, X25519_PRIVATE_KEY_SIZE, X25519_PUBLIC_KEY_SIZE, hash::hkdf_hmac_sha256};
+use crate::{RandomNumberGenerator, X25519_PRIVATE_KEY_SIZE, X25519_PUBLIC_KEY_SIZE, hash::hkdf_hmac_sha256};
 use x25519_dalek::*;
-
-pub fn x25519_new_agreement_private_key() ->[u8; X25519_PRIVATE_KEY_SIZE] {
-    x25519_new_agreement_private_key_using(&mut secure_random::SecureRandomNumberGenerator)
-}
 
 pub fn x25519_new_agreement_private_key_using(rng: &mut impl RandomNumberGenerator) -> [u8; X25519_PRIVATE_KEY_SIZE] {
     rng.random_data(X25519_PRIVATE_KEY_SIZE).try_into().unwrap()

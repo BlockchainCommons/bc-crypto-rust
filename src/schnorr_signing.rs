@@ -1,5 +1,5 @@
 use secp256k1::{Secp256k1, SecretKey, Message, KeyPair, schnorr::Signature, XOnlyPublicKey};
-use crate::{hash::sha256, RandomNumberGenerator};
+use crate::{hash::sha256, RandomNumberGenerator, SCHNORR_SIGNATURE_SIZE, SCHNORR_PUBLIC_KEY_SIZE, ECDSA_PRIVATE_KEY_SIZE};
 
 /// Compute a tagged hash as defined in BIP-340.
 ///
@@ -14,23 +14,22 @@ fn tagged_sha256<D1, D2>(msg: D1, tag: D2) -> [u8; 32]
     sha256(tag_hash)
 }
 
-pub fn schnorr_sign<D1, D2, D3>(message: D1, tag: D2, ecdsa_private_key: D3) -> Vec<u8>
+pub fn schnorr_sign<D1, D2>(message: D1, tag: D2, ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE]) -> [u8; SCHNORR_SIGNATURE_SIZE]
     where D1: AsRef<[u8]>,
           D2: AsRef<[u8]>,
-          D3: AsRef<[u8]>
 {
-    schnorr_sign_using(message, tag, ecdsa_private_key, &mut crate::SecureRandomNumberGenerator)
+    let mut rng = crate::SecureRandomNumberGenerator;
+    schnorr_sign_using(message, tag, ecdsa_private_key, &mut rng)
 }
 
-pub fn schnorr_sign_using<D1, D2, D3>(message: D1, tag: D2, ecdsa_private_key: D3, rng: &mut impl RandomNumberGenerator) -> Vec<u8>
+pub fn schnorr_sign_using<D1, D2>(message: D1, tag: D2, ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], rng: &mut impl RandomNumberGenerator) -> [u8; SCHNORR_SIGNATURE_SIZE]
     where D1: AsRef<[u8]>,
           D2: AsRef<[u8]>,
-          D3: AsRef<[u8]>
 {
     let mut secp = Secp256k1::new();
     let seed: [u8; 32] = rng.random_data(32).try_into().unwrap();
     secp.seeded_randomize(&seed);
-    let sk = SecretKey::from_slice(ecdsa_private_key.as_ref())
+    let sk = SecretKey::from_slice(ecdsa_private_key)
         .expect("32 bytes, within curve order");
     let hash = tagged_sha256(message.as_ref(), tag.as_ref());
     let msg = Message::from_slice(&hash)
@@ -38,22 +37,20 @@ pub fn schnorr_sign_using<D1, D2, D3>(message: D1, tag: D2, ecdsa_private_key: D
     let keypair = KeyPair::from_secret_key(&secp, &sk);
     let aux_rand: [u8; 32] = rng.random_data(32).try_into().unwrap();
     let sig: Signature = secp.sign_schnorr_with_aux_rand(&msg, &keypair, &aux_rand);
-    sig.as_ref().to_vec()
+    sig.as_ref().to_vec().try_into().unwrap()
 }
 
-pub fn schnorr_verify<D1, D2, D3, D4>(message: D1, tag: D2, schnorr_signature: D3, x_only_public_key: D4) -> bool
+pub fn schnorr_verify<D1, D2>(message: D1, tag: D2, schnorr_signature: &[u8; SCHNORR_SIGNATURE_SIZE], schnorr_public_key: &[u8; SCHNORR_PUBLIC_KEY_SIZE]) -> bool
     where D1: AsRef<[u8]>,
           D2: AsRef<[u8]>,
-          D3: AsRef<[u8]>,
-          D4: AsRef<[u8]>
 {
     let secp = Secp256k1::new();
     let hash = tagged_sha256(message.as_ref(), tag.as_ref());
     let msg = Message::from_slice(&hash)
         .expect("Message hash must be 32 bytes");
-    let sig = Signature::from_slice(schnorr_signature.as_ref())
+    let sig = Signature::from_slice(schnorr_signature)
         .expect("Signature must be 64 bytes");
-    let pk = XOnlyPublicKey::from_slice(x_only_public_key.as_ref())
+    let pk = XOnlyPublicKey::from_slice(schnorr_public_key)
         .expect("32 bytes, serialized according to the spec");
     secp.verify_schnorr(&sig, &msg, &pk).is_ok()
 }
@@ -78,10 +75,10 @@ mod tests {
         assert_eq!(&private_key, &hex!("7eb559bbbf6cce2632cf9f194aeb50943de7e1cbad54dcfab27a42759f5e2fed"));
         let message = b"Hello";
         let tag = b"World";
-        let sig = schnorr_sign_using(message, tag, private_key, &mut rng);
+        let sig = schnorr_sign_using(message, tag, &private_key, &mut rng);
         assert_eq!(sig.len(), 64);
         assert_eq!(sig, hex!("d7488b8f2107c468b4c75a59f9cf1f9945fe7742229a186baa005dcfd434720183958fde5aa34045fea71793710e56b160cf74400b90580ed58ce95d8fa92b45"));
-        let x_only_public_key = schnorr_public_key_from_private_key(private_key);
-        assert!(schnorr_verify(message, tag, &sig, x_only_public_key));
+        let schnorr_public_key = schnorr_public_key_from_private_key(&private_key);
+        assert!(schnorr_verify(message, tag, &sig, &schnorr_public_key));
     }
 }

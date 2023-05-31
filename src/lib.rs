@@ -3,7 +3,10 @@
 pub const ECDSA_PRIVATE_KEY_SIZE: usize = 32;
 pub const ECDSA_PUBLIC_KEY_SIZE: usize = 33;
 pub const ECDSA_UNCOMPRESSED_PUBLIC_KEY_SIZE: usize = 65;
+pub const ECDSA_MESSAGE_HASH_SIZE: usize = 32;
+pub const ECDSA_SIGNATURE_SIZE : usize = 64;
 pub const SCHNORR_PUBLIC_KEY_SIZE: usize = 32;
+pub const SCHNORR_SIGNATURE_SIZE: usize = 64;
 pub const X25519_PRIVATE_KEY_SIZE: usize = 32;
 pub const X25519_PUBLIC_KEY_SIZE: usize = 32;
 
@@ -25,7 +28,6 @@ pub use symmetric_encryption::{
 
 mod public_key_encryption;
 pub use public_key_encryption:: {
-    x25519_new_agreement_private_key,
     x25519_new_agreement_private_key_using,
     x25519_agreement_public_key_from_private_key,
     x25519_derive_agreement_private_key,
@@ -35,7 +37,6 @@ pub use public_key_encryption:: {
 
 mod ecdsa_keys;
 pub use ecdsa_keys::{
-    ecdsa_new_private_key,
     ecdsa_new_private_key_using,
     ecdsa_public_key_from_private_key,
     ecdsa_decompress_public_key,
