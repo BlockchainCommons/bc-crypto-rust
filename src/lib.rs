@@ -1,5 +1,8 @@
 #![feature(bigint_helper_methods)]
 
+pub const SYMMETRIC_KEY_SIZE: usize = 32;
+pub const SYMMETRIC_NONCE_SIZE: usize = 12;
+pub const SYMMETRIC_AUTH_SIZE: usize = 16;
 pub const ECDSA_PRIVATE_KEY_SIZE: usize = 32;
 pub const ECDSA_PUBLIC_KEY_SIZE: usize = 33;
 pub const ECDSA_UNCOMPRESSED_PUBLIC_KEY_SIZE: usize = 65;
