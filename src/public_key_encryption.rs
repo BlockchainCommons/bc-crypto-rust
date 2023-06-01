@@ -1,4 +1,4 @@
-use crate::{RandomNumberGenerator, X25519_PRIVATE_KEY_SIZE, X25519_PUBLIC_KEY_SIZE, hash::hkdf_hmac_sha256};
+use crate::{RandomNumberGenerator, X25519_PRIVATE_KEY_SIZE, X25519_PUBLIC_KEY_SIZE, hash::hkdf_hmac_sha256, SYMMETRIC_KEY_SIZE};
 use x25519_dalek::*;
 
 pub fn x25519_new_agreement_private_key_using(rng: &mut impl RandomNumberGenerator) -> [u8; X25519_PRIVATE_KEY_SIZE] {
@@ -23,18 +23,18 @@ pub fn x25519_derive_signing_private_key<D>(key_material: D) -> [u8; X25519_PRIV
     hkdf_hmac_sha256(key_material, "signing".as_bytes(), X25519_PRIVATE_KEY_SIZE).try_into().unwrap()
 }
 
-pub fn x25519_derive_agreement_shared_key(agreement_private_key: &[u8; X25519_PRIVATE_KEY_SIZE], agreement_public_key: &[u8; X25519_PUBLIC_KEY_SIZE]) -> Vec<u8> {
+pub fn x25519_shared_key(agreement_private_key: &[u8; X25519_PRIVATE_KEY_SIZE], agreement_public_key: &[u8; X25519_PUBLIC_KEY_SIZE]) -> [u8; SYMMETRIC_KEY_SIZE] {
     let sk = StaticSecret::from(*agreement_private_key);
     let pk = PublicKey::from(*agreement_public_key);
     let shared_secret = sk.diffie_hellman(&pk);
-    hkdf_hmac_sha256(shared_secret.as_bytes(), "agreement".as_bytes(), 32)
+    hkdf_hmac_sha256(shared_secret.as_bytes(), "agreement".as_bytes(), 32).try_into().unwrap()
 }
 
 #[cfg(test)]
 mod tests {
     use hex_literal::hex;
 
-    use crate::{make_fake_random_number_generator, x25519_new_agreement_private_key_using, x25519_agreement_public_key_from_private_key, x25519_derive_agreement_private_key, x25519_derive_signing_private_key, x25519_derive_agreement_shared_key};
+    use crate::{make_fake_random_number_generator, x25519_new_agreement_private_key_using, x25519_agreement_public_key_from_private_key, x25519_derive_agreement_private_key, x25519_derive_signing_private_key, x25519_shared_key};
 
     #[test]
     fn test_x25519_keys() {
@@ -58,8 +58,8 @@ mod tests {
         let alice_public_key = x25519_agreement_public_key_from_private_key(&alice_private_key);
         let bob_private_key = x25519_new_agreement_private_key_using(&mut rng);
         let bob_public_key = x25519_agreement_public_key_from_private_key(&bob_private_key);
-        let alice_shared_key = x25519_derive_agreement_shared_key(&alice_private_key, &bob_public_key);
-        let bob_shared_key = x25519_derive_agreement_shared_key(&bob_private_key, &alice_public_key);
+        let alice_shared_key = x25519_shared_key(&alice_private_key, &bob_public_key);
+        let bob_shared_key = x25519_shared_key(&bob_private_key, &alice_public_key);
         assert_eq!(alice_shared_key, bob_shared_key);
         assert_eq!(alice_shared_key, hex!("1e9040d1ff45df4bfca7ef2b4dd2b11101b40d91bf5bf83f8c83d53f0fbb6c23"));
     }

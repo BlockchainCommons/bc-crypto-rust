@@ -14,15 +14,15 @@ fn tagged_sha256<D1, D2>(msg: D1, tag: D2) -> [u8; 32]
     sha256(tag_hash)
 }
 
-pub fn schnorr_sign<D1, D2>(message: D1, tag: D2, ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE]) -> [u8; SCHNORR_SIGNATURE_SIZE]
+pub fn schnorr_sign<D1, D2>(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: D1, tag: D2) -> [u8; SCHNORR_SIGNATURE_SIZE]
     where D1: AsRef<[u8]>,
           D2: AsRef<[u8]>,
 {
     let mut rng = crate::SecureRandomNumberGenerator;
-    schnorr_sign_using(message, tag, ecdsa_private_key, &mut rng)
+    schnorr_sign_using(ecdsa_private_key, message, tag, &mut rng)
 }
 
-pub fn schnorr_sign_using<D1, D2>(message: D1, tag: D2, ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], rng: &mut impl RandomNumberGenerator) -> [u8; SCHNORR_SIGNATURE_SIZE]
+pub fn schnorr_sign_using<D1, D2>(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: D1, tag: D2, rng: &mut impl RandomNumberGenerator) -> [u8; SCHNORR_SIGNATURE_SIZE]
     where D1: AsRef<[u8]>,
           D2: AsRef<[u8]>,
 {
@@ -40,7 +40,7 @@ pub fn schnorr_sign_using<D1, D2>(message: D1, tag: D2, ecdsa_private_key: &[u8;
     sig.as_ref().to_vec().try_into().unwrap()
 }
 
-pub fn schnorr_verify<D1, D2>(message: D1, tag: D2, schnorr_signature: &[u8; SCHNORR_SIGNATURE_SIZE], schnorr_public_key: &[u8; SCHNORR_PUBLIC_KEY_SIZE]) -> bool
+pub fn schnorr_verify<D1, D2>(schnorr_public_key: &[u8; SCHNORR_PUBLIC_KEY_SIZE], message: D1, tag: D2, schnorr_signature: &[u8; SCHNORR_SIGNATURE_SIZE]) -> bool
     where D1: AsRef<[u8]>,
           D2: AsRef<[u8]>,
 {
@@ -75,10 +75,10 @@ mod tests {
         assert_eq!(&private_key, &hex!("7eb559bbbf6cce2632cf9f194aeb50943de7e1cbad54dcfab27a42759f5e2fed"));
         let message = b"Hello";
         let tag = b"World";
-        let sig = schnorr_sign_using(message, tag, &private_key, &mut rng);
+        let sig = schnorr_sign_using(&private_key, message, tag, &mut rng);
         assert_eq!(sig.len(), 64);
         assert_eq!(sig, hex!("d7488b8f2107c468b4c75a59f9cf1f9945fe7742229a186baa005dcfd434720183958fde5aa34045fea71793710e56b160cf74400b90580ed58ce95d8fa92b45"));
         let schnorr_public_key = schnorr_public_key_from_private_key(&private_key);
-        assert!(schnorr_verify(message, tag, &sig, &schnorr_public_key));
+        assert!(schnorr_verify(&schnorr_public_key, message, tag, &sig));
     }
 }

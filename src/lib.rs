@@ -35,7 +35,7 @@ pub use public_key_encryption:: {
     x25519_agreement_public_key_from_private_key,
     x25519_derive_agreement_private_key,
     x25519_derive_signing_private_key,
-    x25519_derive_agreement_shared_key,
+    x25519_shared_key,
 };
 
 mod ecdsa_keys;
