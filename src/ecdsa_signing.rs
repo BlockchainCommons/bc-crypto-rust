@@ -12,7 +12,7 @@ pub fn ecdsa_sign<T>(private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: T) -> 
     sig.serialize_compact().to_vec().try_into().unwrap()
 }
 
-pub fn ecdsa_verify<T>(public_key: &[u8; ECDSA_PUBLIC_KEY_SIZE], message: T, signature: &[u8; ECDSA_SIGNATURE_SIZE]) -> bool
+pub fn ecdsa_verify<T>(public_key: &[u8; ECDSA_PUBLIC_KEY_SIZE], signature: &[u8; ECDSA_SIGNATURE_SIZE], message: T) -> bool
     where T: AsRef<[u8]>,
 {
     let secp = Secp256k1::new();
@@ -40,6 +40,6 @@ mod tests {
         let public_key = ecdsa_public_key_from_private_key(&private_key);
         let signature = ecdsa_sign(&private_key, MESSAGE);
         assert_eq!(signature, hex!("e75702ed8f645ce7fe510507b2403029e461ef4570d12aa440e4f81385546a13740b7d16878ff0b46b1cbe08bc218ccb0b00937b61c4707de2ca6148508e51fb"));
-        assert!(ecdsa_verify(&public_key, MESSAGE, &signature));
+        assert!(ecdsa_verify(&public_key, &signature, MESSAGE));
     }
 }

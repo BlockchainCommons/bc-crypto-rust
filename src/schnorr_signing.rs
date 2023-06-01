@@ -40,7 +40,7 @@ pub fn schnorr_sign_using<D1, D2>(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZ
     sig.as_ref().to_vec().try_into().unwrap()
 }
 
-pub fn schnorr_verify<D1, D2>(schnorr_public_key: &[u8; SCHNORR_PUBLIC_KEY_SIZE], message: D1, tag: D2, schnorr_signature: &[u8; SCHNORR_SIGNATURE_SIZE]) -> bool
+pub fn schnorr_verify<D1, D2>(schnorr_public_key: &[u8; SCHNORR_PUBLIC_KEY_SIZE], schnorr_signature: &[u8; SCHNORR_SIGNATURE_SIZE], message: D1, tag: D2) -> bool
     where D1: AsRef<[u8]>,
           D2: AsRef<[u8]>,
 {
@@ -79,6 +79,6 @@ mod tests {
         assert_eq!(sig.len(), 64);
         assert_eq!(sig, hex!("d7488b8f2107c468b4c75a59f9cf1f9945fe7742229a186baa005dcfd434720183958fde5aa34045fea71793710e56b160cf74400b90580ed58ce95d8fa92b45"));
         let schnorr_public_key = schnorr_public_key_from_private_key(&private_key);
-        assert!(schnorr_verify(&schnorr_public_key, message, tag, &sig));
+        assert!(schnorr_verify(&schnorr_public_key, &sig, message, tag));
     }
 }
