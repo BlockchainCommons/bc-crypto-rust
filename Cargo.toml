@@ -33,3 +33,4 @@ x25519-dalek = { git = "https://github.com/dalek-cryptography/x25519-dalek.git",
 [dev-dependencies]
 hex-literal = "0.4.1"
 hex = "0.4.3"
+version-sync = "0.9"
