@@ -9,6 +9,7 @@ keywords = ["cryptography"]
 repository = "https://github.com/BlockchainCommons/bc-crypto-rust"
 readme = "README.md"
 categories = ["cryptography"]
+documentation = "https://docs.rs/bc-crypto"
 
 [dependencies]
 sha2 = "0.10.6"
