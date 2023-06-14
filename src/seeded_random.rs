@@ -3,11 +3,20 @@ use rand::RngCore;
 use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
 
+/// A random number generator that can be used as a source of deterministic pseudo-randomness
+/// for testing purposes.
 pub struct SeededRandomNumberGenerator {
     rng: Xoshiro256StarStar
 }
 
 impl SeededRandomNumberGenerator {
+    /// Creates a new seeded random number generator.
+    ///
+    /// The seed should be a 256-bit value, represented as an array of 4 64-bit integers.
+    /// For the output distribution to look random, the seed should not have any obvious
+    /// patterns, like all zeroes or all ones.
+    ///
+    /// This is not cryptographically secure, and should only be used for testing purposes.
     pub fn new(seed: [u64; 4]) -> Self {
         let mut seed_bytes = [0u8; 32];
         for i in 0..4 {
@@ -39,10 +48,12 @@ impl RandomNumberGenerator for SeededRandomNumberGenerator {
     }
 }
 
+/// Creates a seeded random number generator with a fixed seed.
 pub fn make_fake_random_number_generator() -> impl RandomNumberGenerator {
     SeededRandomNumberGenerator::new([17295166580085024720, 422929670265678780, 5577237070365765850, 7953171132032326923])
 }
 
+/// Creates a vector of random data with a fixed seed.
 pub fn fake_random_data(size: usize) -> Vec<u8> {
     make_fake_random_number_generator().random_data(size)
 }

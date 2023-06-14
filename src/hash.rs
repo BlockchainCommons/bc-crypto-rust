@@ -3,39 +3,39 @@ use hmac::{Hmac, Mac};
 use pbkdf2::pbkdf2_hmac;
 use hkdf::Hkdf;
 
+use crate::{CRC32_SIZE, SHA256_SIZE, SHA512_SIZE};
+
+/// Computes the CRC-32 checksum of the given data.
 pub fn crc32<D>(data: D) -> u32
     where D: AsRef<[u8]>
 {
     crc32fast::hash(data.as_ref())
 }
 
-pub fn crc32_data_opt<D>(data: D, little_endian: bool) -> Vec<u8>
+/// Computes the SHA-256 hash of the given data, returning the hash as a
+/// 4-byte vector that can be returned in either big-endian or little-endian format.
+pub fn crc32_data_opt<D>(data: D, little_endian: bool) -> [u8; CRC32_SIZE]
     where D: AsRef<[u8]>
 {
-    let checksum = crc32(data);
-    let mut buf = Vec::new();
+    let checksum: u32 = crc32(data);
+    let mut result = [0u8; 4];
     if little_endian {
-        buf.push((checksum & 0xff) as u8);
-        buf.push(((checksum >> 8) & 0xff) as u8);
-        buf.push(((checksum >> 16) & 0xff) as u8);
-        buf.push(((checksum >> 24) & 0xff) as u8);
+        result.copy_from_slice(&checksum.to_le_bytes());
     } else {
-        buf.push(((checksum >> 24) & 0xff) as u8);
-        buf.push(((checksum >> 16) & 0xff) as u8);
-        buf.push(((checksum >> 8) & 0xff) as u8);
-        buf.push((checksum & 0xff) as u8);
+        result.copy_from_slice(&checksum.to_be_bytes());
     }
-    buf
+    result
 }
-
-pub fn crc32_data<D>(data: D) -> Vec<u8>
+/// Computes the SHA-256 hash of the given data, returning the hash as a
+/// 4-byte vector in big-endian format.
+pub fn crc32_data<D>(data: D) -> [u8; CRC32_SIZE]
     where D: AsRef<[u8]>
 {
     crc32_data_opt(data, false)
 }
 
 /// Computes the SHA-256 digest of the input buffer.
-pub fn sha256<D>(data: D) -> [u8; 32]
+pub fn sha256<D>(data: D) -> [u8; SHA256_SIZE]
     where D: AsRef<[u8]>
 {
     let mut hasher = Sha256::new();
@@ -47,12 +47,12 @@ pub fn sha256<D>(data: D) -> [u8; 32]
 }
 
 /// Computes the double SHA-256 digest of the input buffer.
-pub fn double_sha256(message: &[u8]) -> [u8; 32] {
+pub fn double_sha256(message: &[u8]) -> [u8; SHA256_SIZE] {
     sha256(sha256(message))
 }
 
 /// Computes the SHA-512 digest of the input buffer.
-pub fn sha512<D>(data: D) -> [u8; 64]
+pub fn sha512<D>(data: D) -> [u8; SHA512_SIZE]
     where D: AsRef<[u8]>
 {
     let mut hasher = Sha512::new();
@@ -64,7 +64,7 @@ pub fn sha512<D>(data: D) -> [u8; 64]
 }
 
 /// Computes the HMAC-SHA-256 for the given key and message.
-pub fn hmac_sha256<D1, D2>(key: D1, message: D2) -> [u8; 32]
+pub fn hmac_sha256<D1, D2>(key: D1, message: D2) -> [u8; SHA256_SIZE]
     where
         D1: AsRef<[u8]>,
         D2: AsRef<[u8]>
@@ -76,7 +76,7 @@ pub fn hmac_sha256<D1, D2>(key: D1, message: D2) -> [u8; 32]
 }
 
 /// Computes the HMAC-SHA-512 for the given key and message.
-pub fn hmac_sha512<D1, D2>(key: D1, message: D2) -> [u8; 64]
+pub fn hmac_sha512<D1, D2>(key: D1, message: D2) -> [u8; SHA512_SIZE]
     where
         D1: AsRef<[u8]>,
         D2: AsRef<[u8]>

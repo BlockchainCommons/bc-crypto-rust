@@ -6,15 +6,15 @@ use num_traits::{
 
 use crate::{magnitude::HasMagnitude, widening::Widening};
 
-// A type that can generate random numbers.
+/// A type that can generate random numbers.
 pub trait RandomNumberGenerator {
-    // Returns the next random `u64`.
+    /// Returns the next random `u64`.
     fn next_u64(&mut self) -> u64;
 
-    // Returns a vector of random bytes of the given size.
+    /// Returns a vector of random bytes of the given size.
     fn random_data(&mut self, size: usize) -> Vec<u8>;
 
-    // Fills the given buffer with random bytes.
+    /// Fills the given buffer with random bytes.
     fn fill_random_data(&mut self, data: &mut [u8]);
 
     /// Returns a random value that is less than the given upper bound.

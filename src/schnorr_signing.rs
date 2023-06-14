@@ -14,6 +14,7 @@ fn tagged_sha256<D1, D2>(msg: D1, tag: D2) -> [u8; 32]
     sha256(tag_hash)
 }
 
+/// Schnorr signs the given message using the given private key and user-defined tag.
 pub fn schnorr_sign<D1, D2>(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: D1, tag: D2) -> [u8; SCHNORR_SIGNATURE_SIZE]
     where D1: AsRef<[u8]>,
           D2: AsRef<[u8]>,
@@ -22,6 +23,8 @@ pub fn schnorr_sign<D1, D2>(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], me
     schnorr_sign_using(ecdsa_private_key, message, tag, &mut rng)
 }
 
+/// Schnorr signs the given message using the given private key, user-defined tag,
+/// and random number generator.
 pub fn schnorr_sign_using<D1, D2>(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: D1, tag: D2, rng: &mut impl RandomNumberGenerator) -> [u8; SCHNORR_SIGNATURE_SIZE]
     where D1: AsRef<[u8]>,
           D2: AsRef<[u8]>,
@@ -40,6 +43,8 @@ pub fn schnorr_sign_using<D1, D2>(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZ
     sig.as_ref().to_vec().try_into().unwrap()
 }
 
+/// Verifies the given Schnorr signature against the given message, public key,
+/// and user-defined tag, which must match the tag used to create the signature.
 pub fn schnorr_verify<D1, D2>(schnorr_public_key: &[u8; SCHNORR_PUBLIC_KEY_SIZE], schnorr_signature: &[u8; SCHNORR_SIGNATURE_SIZE], message: D1, tag: D2) -> bool
     where D1: AsRef<[u8]>,
           D2: AsRef<[u8]>,

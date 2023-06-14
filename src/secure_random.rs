@@ -36,6 +36,7 @@ lazy_static::lazy_static! {
     static ref LAZY_RNG: LazyStdRng = LazyStdRng::new();
 }
 
+/// Generate a vector of cryptographically strong random bytes of the given size.
 pub fn random_data(size: usize) -> Vec<u8> {
     let mut rng_guard = LAZY_RNG.get_rng();
     let rng = rng_guard.as_mut().expect("RNG was not initialized");
@@ -44,6 +45,7 @@ pub fn random_data(size: usize) -> Vec<u8> {
     data
 }
 
+/// Fill the given slice with cryptographically strong random bytes.
 pub fn fill_random_data(data: &mut [u8]) {
     let mut rng_guard = LAZY_RNG.get_rng();
     let rng = rng_guard.as_mut().expect("RNG was not initialized");
@@ -56,13 +58,9 @@ pub fn next_u64() -> u64 {
     rng.next_u64()
 }
 
+/// A random number generator that can be used as a source of cryptographically-strong
+/// randomness.
 pub struct SecureRandomNumberGenerator;
-
-impl SecureRandomNumberGenerator {
-    pub fn shared() -> Self {
-        Self
-    }
-}
 
 impl RandomNumberGenerator for SecureRandomNumberGenerator {
     fn next_u64(&mut self) -> u64 {

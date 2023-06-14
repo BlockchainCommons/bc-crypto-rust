@@ -2,7 +2,11 @@ use chacha20poly1305::{ChaCha20Poly1305, KeyInit, AeadInPlace};
 
 use crate::{Error, SYMMETRIC_KEY_SIZE, SYMMETRIC_NONCE_SIZE, SYMMETRIC_AUTH_SIZE};
 
-pub fn encrypt_aead_chacha20_poly1305_with_aad<D1, D2>(
+/// Symmetrically encrypts the given plaintext using ChaCha20-Poly1305 and the given
+/// additional authenticated data (AAD).
+///
+/// Returns the ciphertext and the authentication tag.
+pub fn aead_chacha20_poly1305_encrypt_with_aad<D1, D2>(
     plaintext: D1,
     key: &[u8; SYMMETRIC_KEY_SIZE],
     nonce: &[u8; SYMMETRIC_NONCE_SIZE],
@@ -18,7 +22,10 @@ pub fn encrypt_aead_chacha20_poly1305_with_aad<D1, D2>(
     (buffer, auth.to_vec().try_into().unwrap())
 }
 
-pub fn encrypt_aead_chacha20_poly1305<D>(
+/// Symmetrically encrypts the given plaintext using ChaCha20-Poly1305.
+///
+/// Returns the ciphertext and the authentication tag.
+pub fn aead_chacha20_poly1305_encrypt<D>(
     plaintext: D,
     key: &[u8; SYMMETRIC_KEY_SIZE],
     nonce: &[u8; SYMMETRIC_NONCE_SIZE],
@@ -26,10 +33,14 @@ pub fn encrypt_aead_chacha20_poly1305<D>(
     where
         D: AsRef<[u8]>,
 {
-    encrypt_aead_chacha20_poly1305_with_aad(plaintext, key, nonce, &[])
+    aead_chacha20_poly1305_encrypt_with_aad(plaintext, key, nonce, &[])
 }
 
-pub fn decrypt_aead_chacha20_poly1305_with_aad<D1, D2>(
+/// Symmetrically decrypts the given ciphertext using ChaCha20-Poly1305 and the given
+/// additional authenticated data (AAD).
+///
+/// Returns the plaintext, or an error if the decryption failed.
+pub fn aead_chacha20_poly1305_decrypt_with_aad<D1, D2>(
     ciphertext: D1,
     key: &[u8; SYMMETRIC_KEY_SIZE],
     nonce: &[u8; SYMMETRIC_NONCE_SIZE],
@@ -46,7 +57,10 @@ pub fn decrypt_aead_chacha20_poly1305_with_aad<D1, D2>(
     Ok(buffer)
 }
 
-pub fn decrypt_aead_chacha20_poly1305<D>(
+/// Symmetrically decrypts the given ciphertext using ChaCha20-Poly1305.
+///
+/// Returns the plaintext, or an error if the decryption failed.
+pub fn aead_chacha20_poly1305_decrypt<D>(
     ciphertext: D,
     key: &[u8; SYMMETRIC_KEY_SIZE],
     nonce: &[u8; SYMMETRIC_NONCE_SIZE],
@@ -55,13 +69,13 @@ pub fn decrypt_aead_chacha20_poly1305<D>(
     where
         D: AsRef<[u8]>,
 {
-    decrypt_aead_chacha20_poly1305_with_aad(ciphertext, key, nonce, [], auth)
+    aead_chacha20_poly1305_decrypt_with_aad(ciphertext, key, nonce, [], auth)
 }
 
 #[cfg(test)]
 mod tests {
     use hex_literal::hex;
-    use super::{encrypt_aead_chacha20_poly1305_with_aad, decrypt_aead_chacha20_poly1305_with_aad};
+    use super::{aead_chacha20_poly1305_encrypt_with_aad, aead_chacha20_poly1305_decrypt_with_aad};
     use crate::{random_data, SYMMETRIC_AUTH_SIZE};
 
     const PLAINTEXT: &[u8] = b"Ladies and Gentlemen of the class of '99: If I could offer you only one tip for the future, sunscreen would be it.";
@@ -72,7 +86,7 @@ mod tests {
     const AUTH: [u8; 16] = hex!("1ae10b594f09e26a7e902ecbd0600691");
 
     fn encrypted() -> (Vec<u8>, [u8; SYMMETRIC_AUTH_SIZE]) {
-        encrypt_aead_chacha20_poly1305_with_aad(PLAINTEXT, &KEY, &NONCE, &AAD)
+        aead_chacha20_poly1305_encrypt_with_aad(PLAINTEXT, &KEY, &NONCE, &AAD)
     }
 
     #[test]
@@ -81,7 +95,7 @@ mod tests {
         assert_eq!(ciphertext, CIPHERTEXT);
         assert_eq!(auth, AUTH);
 
-        let decrypted_plaintext = decrypt_aead_chacha20_poly1305_with_aad(&ciphertext, &KEY, &NONCE, AAD, &auth).unwrap();
+        let decrypted_plaintext = aead_chacha20_poly1305_decrypt_with_aad(&ciphertext, &KEY, &NONCE, AAD, &auth).unwrap();
         assert_eq!(PLAINTEXT, decrypted_plaintext.as_slice());
     }
 
@@ -89,8 +103,8 @@ mod tests {
     fn test_random_key_and_nonce() {
         let key = random_data(32).try_into().unwrap();
         let nonce = random_data(12).try_into().unwrap();
-        let (ciphertext, auth) = encrypt_aead_chacha20_poly1305_with_aad(PLAINTEXT, &key, &nonce, &AAD);
-        let decrypted_plaintext = decrypt_aead_chacha20_poly1305_with_aad(ciphertext, &key, &nonce, AAD, &auth).unwrap();
+        let (ciphertext, auth) = aead_chacha20_poly1305_encrypt_with_aad(PLAINTEXT, &key, &nonce, &AAD);
+        let decrypted_plaintext = aead_chacha20_poly1305_decrypt_with_aad(ciphertext, &key, &nonce, AAD, &auth).unwrap();
         assert_eq!(PLAINTEXT, decrypted_plaintext.as_slice());
     }
 
@@ -98,8 +112,8 @@ mod tests {
     fn test_empty_data() {
         let key = random_data(32).try_into().unwrap();
         let nonce = random_data(12).try_into().unwrap();
-        let (ciphertext, auth) = encrypt_aead_chacha20_poly1305_with_aad([], &key, &nonce, &[]);
-        let decrypted_plaintext = decrypt_aead_chacha20_poly1305_with_aad(ciphertext, &key, &nonce, [], &auth).unwrap();
+        let (ciphertext, auth) = aead_chacha20_poly1305_encrypt_with_aad([], &key, &nonce, &[]);
+        let decrypted_plaintext = aead_chacha20_poly1305_decrypt_with_aad(ciphertext, &key, &nonce, [], &auth).unwrap();
         assert_eq!(Vec::<u8>::new(), decrypted_plaintext.as_slice());
     }
 }

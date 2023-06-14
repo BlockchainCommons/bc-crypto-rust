@@ -8,6 +8,23 @@
 
 ## Introduction
 
+`bc-crypto` is a exposes a uniform API for the cryptographic primitives used in higher-level [Blockchain Commons](https://blockchaincommons.com) projects such as [Gordian Envelope](https://crates.io/crates/bc-envelope). The various providers listed below may change, but the API this package provides should be stable.
+
+| Category | Algorithm | Provider
+|---|---|---
+| Cryptographic digest | SHA-256 | [sha2](https://crates.io/crates/sha2)
+| Cryptographic digest | SHA-512 | [sha2](https://crates.io/crates/sha2)
+| Hashed Message Authentication Codes | HMAC-SHA-256 | [hmac](https://crates.io/crates/hmac)
+| Hashed Message Authentication Codes | HMAC-SHA-512 | [hmac](https://crates.io/crates/hmac)
+| Password Expansion | PBKDF2-HMAC-SHA-256 | [pbkdf2](https://crates.io/crates/pbkdf2)
+| Key Derivation | HKDF-HMAC-SHA-256 |  [hkdf](https://crates.io/crates/hkdf)
+| Symmetric Encryption | IETF-ChaCha20-Poly1305 | [chacha20poly1305](https://crates.io/crates/chacha20poly1305)
+| Key Agreement | X25519 | [x25519-dalek](https://crates.io/crates/x25519-dalek)
+| Signing/Verification | ECDSA | [secp256k1](https://crates.io/crates/secp256k1)
+| Signing/Verification | Schnorr | [secp256k1](https://crates.io/crates/secp256k1)
+| Secure Random Number Generation | NA | [getrandom](https://crates.io/crates/getrandom), [rand](https://crates.io/crates/rand)
+| Pseudorandom Number Generation | Xoshiro256** | [rand_xoshiro](https://crates.io/crates/rand_xoshiro)
+
 ## Getting Started
 
 ```toml
@@ -15,11 +32,13 @@
 bc-crypto = "0.1.0"
 ```
 
-## Specification
-
-
 ## Related Projects
 
+Higher-level Blockchain Commons projects that use this crate include:
+
+* [SSKR](https://crates.io/crates/sskr)
+* [Secure Components](https://crates.io/crates/bc-components)
+* [Gordian Envelope](https://crates.io/crates/bc-envelope)
 
 ## Status - Alpha
 

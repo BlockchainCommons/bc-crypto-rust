@@ -1,28 +1,33 @@
 use crate::{RandomNumberGenerator, X25519_PRIVATE_KEY_SIZE, X25519_PUBLIC_KEY_SIZE, hash::hkdf_hmac_sha256, SYMMETRIC_KEY_SIZE};
 use x25519_dalek::*;
 
+/// Create a new X25519 private key using the given random number generator.
 pub fn x25519_new_agreement_private_key_using(rng: &mut impl RandomNumberGenerator) -> [u8; X25519_PRIVATE_KEY_SIZE] {
     rng.random_data(X25519_PRIVATE_KEY_SIZE).try_into().unwrap()
 }
 
+/// Derive a X25519 public key from a private key.
 pub fn x25519_agreement_public_key_from_private_key(agreement_private_key: &[u8; X25519_PRIVATE_KEY_SIZE]) -> [u8; X25519_PUBLIC_KEY_SIZE] {
     let sk = StaticSecret::from(*agreement_private_key);
     let pk = PublicKey::from(&sk);
     pk.as_bytes().to_owned()
 }
 
+/// Derive an X25519 agreement private key from the given key material.
 pub fn x25519_derive_agreement_private_key<D>(key_material: D) -> [u8; X25519_PRIVATE_KEY_SIZE]
     where D: AsRef<[u8]>
 {
     hkdf_hmac_sha256(key_material, "agreement".as_bytes(), X25519_PRIVATE_KEY_SIZE).try_into().unwrap()
 }
 
+/// Derive an X25519 signing private key from the given key material.
 pub fn x25519_derive_signing_private_key<D>(key_material: D) -> [u8; X25519_PRIVATE_KEY_SIZE]
     where D: AsRef<[u8]>
 {
     hkdf_hmac_sha256(key_material, "signing".as_bytes(), X25519_PRIVATE_KEY_SIZE).try_into().unwrap()
 }
 
+/// Compute the shared symmetric key from the given agreement private key and agreement public key.
 pub fn x25519_shared_key(agreement_private_key: &[u8; X25519_PRIVATE_KEY_SIZE], agreement_public_key: &[u8; X25519_PUBLIC_KEY_SIZE]) -> [u8; SYMMETRIC_KEY_SIZE] {
     let sk = StaticSecret::from(*agreement_private_key);
     let pk = PublicKey::from(*agreement_public_key);

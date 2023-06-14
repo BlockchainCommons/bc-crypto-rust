@@ -2,10 +2,12 @@ use secp256k1::{Secp256k1, SecretKey, PublicKey, KeyPair, constants::{PUBLIC_KEY
 
 use crate::{ECDSA_PRIVATE_KEY_SIZE, RandomNumberGenerator, hash::hkdf_hmac_sha256, SCHNORR_PUBLIC_KEY_SIZE};
 
+/// Generate a new ECDSA private key using the given random number generator.
 pub fn ecdsa_new_private_key_using(rng: &mut impl RandomNumberGenerator) -> [u8; SECRET_KEY_SIZE] {
     rng.random_data(ECDSA_PRIVATE_KEY_SIZE).try_into().unwrap()
 }
 
+/// Derives the ECDSA public key from the given private key.
 pub fn ecdsa_public_key_from_private_key(private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE]) -> [u8; PUBLIC_KEY_SIZE] {
     let secp = Secp256k1::new();
     let private_key = SecretKey::from_slice(private_key)
@@ -14,24 +16,32 @@ pub fn ecdsa_public_key_from_private_key(private_key: &[u8; ECDSA_PRIVATE_KEY_SI
     public_key.serialize()
 }
 
+/// Decompresses the given ECDSA public key.
+///
+/// This format is generally deprecated, but is still used in some places.
 pub fn ecdsa_decompress_public_key(compressed_public_key: &[u8; PUBLIC_KEY_SIZE]) -> [u8; UNCOMPRESSED_PUBLIC_KEY_SIZE] {
     let public_key = PublicKey::from_slice(compressed_public_key)
         .expect("65 bytes, serialized according to the spec");
     public_key.serialize_uncompressed()
 }
 
+/// Compresses the given ECDSA public key.
 pub fn ecdsa_compress_public_key(uncompressed_public_key: &[u8; UNCOMPRESSED_PUBLIC_KEY_SIZE]) -> [u8; PUBLIC_KEY_SIZE] {
     let public_key = PublicKey::from_slice(uncompressed_public_key.as_ref())
         .expect("33 bytes, serialized according to the spec");
     public_key.serialize()
 }
 
+/// Derives the ECDSA private key from the given key material.
+///
+/// Uses the HKDF algorithm to derive the private key from the given key material.
 pub fn ecdsa_derive_private_key<D>(key_material: D) -> Vec<u8>
     where D: AsRef<[u8]>
 {
     hkdf_hmac_sha256(key_material, "signing".as_bytes(), 32)
 }
 
+/// Derives the Schnorr public key from the given private key.
 pub fn schnorr_public_key_from_private_key(private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE]) -> [u8; SCHNORR_PUBLIC_KEY_SIZE] {
     let secp = Secp256k1::new();
     let kp: KeyPair = KeyPair::from_seckey_slice(&secp, private_key).unwrap();

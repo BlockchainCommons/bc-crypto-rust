@@ -1,6 +1,7 @@
 use secp256k1::{SecretKey, Secp256k1, PublicKey, Message, ecdsa::Signature};
 use crate::{hash::double_sha256, ECDSA_PRIVATE_KEY_SIZE, ECDSA_PUBLIC_KEY_SIZE, ECDSA_SIGNATURE_SIZE};
 
+/// ECDSA signs the given message using the given private key.
 pub fn ecdsa_sign<T>(private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: T) -> [u8; ECDSA_SIGNATURE_SIZE]
     where T: AsRef<[u8]>,
 {
@@ -12,6 +13,9 @@ pub fn ecdsa_sign<T>(private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: T) -> 
     sig.serialize_compact().to_vec().try_into().unwrap()
 }
 
+/// Verifies the given ECDSA signature using the given public key.
+///
+/// Returns `true` if the signature is valid, `false` otherwise.
 pub fn ecdsa_verify<T>(public_key: &[u8; ECDSA_PUBLIC_KEY_SIZE], signature: &[u8; ECDSA_SIGNATURE_SIZE], message: T) -> bool
     where T: AsRef<[u8]>,
 {
