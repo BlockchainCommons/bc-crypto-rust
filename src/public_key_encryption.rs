@@ -1,5 +1,5 @@
 use crate::{RandomNumberGenerator, X25519_PRIVATE_KEY_SIZE, X25519_PUBLIC_KEY_SIZE, hash::hkdf_hmac_sha256, SYMMETRIC_KEY_SIZE};
-use x25519_dalek::*;
+use x25519_dalek::{PublicKey, StaticSecret};
 
 /// Create a new X25519 private key using the given random number generator.
 pub fn x25519_new_agreement_private_key_using(rng: &mut impl RandomNumberGenerator) -> [u8; X25519_PRIVATE_KEY_SIZE] {
