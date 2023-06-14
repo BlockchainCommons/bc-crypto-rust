@@ -1,3 +1,5 @@
+#![doc(html_root_url = "https://docs.rs/bc-crypto/0.1.0")]
+#![warn(rust_2018_idioms)]
 #![feature(bigint_helper_methods)]
 
 pub const SYMMETRIC_KEY_SIZE: usize = 32;

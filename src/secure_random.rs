@@ -18,7 +18,7 @@ impl LazyStdRng {
         }
     }
 
-    fn get_rng(&self) -> std::sync::MutexGuard<Option<StdRng>> {
+    fn get_rng(&self) -> std::sync::MutexGuard<'_, Option<StdRng>> {
         self.init.call_once(|| {
             let mut seed = [0u8; 32];
             getrandom(&mut seed).expect("Failed to seed RNG");
