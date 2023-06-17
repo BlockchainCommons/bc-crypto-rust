@@ -1,13 +1,13 @@
 [package]
 name = "bc-crypto"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
-license-file = "LICENSE.md"
 description = "Gordian Envelope for Rust."
 authors = ["Blockchain Commons"]
 keywords = ["cryptography"]
 repository = "https://github.com/BlockchainCommons/bc-crypto-rust"
 readme = "README.md"
+license = "BSD-2-Clause-Patent"
 categories = ["cryptography"]
 documentation = "https://docs.rs/bc-crypto"
 
