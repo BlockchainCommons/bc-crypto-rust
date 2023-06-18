@@ -1,4 +1,4 @@
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Debug)]
 pub enum Error {
     DecryptFailed
 }
