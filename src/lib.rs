@@ -1,6 +1,5 @@
-#![doc(html_root_url = "https://docs.rs/bc-crypto/0.1.3")]
+#![doc(html_root_url = "https://docs.rs/bc-crypto/0.1.4")]
 #![warn(rust_2018_idioms)]
-#![feature(bigint_helper_methods)]
 
 //! # Introduction
 //!
@@ -25,7 +24,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! bc-crypto = "0.1.3"
+//! bc-crypto = "0.1.4"
 //! ```
 
 pub const CRC32_SIZE: usize = 4;
