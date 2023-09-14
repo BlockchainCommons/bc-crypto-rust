@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/bc-crypto/0.1.4")]
+#![doc(html_root_url = "https://docs.rs/bc-crypto/0.2.0")]
 #![warn(rust_2018_idioms)]
 
 //! # Introduction
@@ -24,7 +24,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! bc-crypto = "0.1.4"
+//! bc-crypto = "0.2.0"
 //! ```
 
 pub const CRC32_SIZE: usize = 4;
@@ -42,9 +42,6 @@ pub const SCHNORR_PUBLIC_KEY_SIZE: usize = 32;
 pub const SCHNORR_SIGNATURE_SIZE: usize = 64;
 pub const X25519_PRIVATE_KEY_SIZE: usize = 32;
 pub const X25519_PUBLIC_KEY_SIZE: usize = 32;
-
-mod magnitude;
-mod widening;
 
 /// The `hash` module contains functions for hashing data.
 pub mod hash;
@@ -90,23 +87,6 @@ pub use schnorr_signing::{
     schnorr_sign,
     schnorr_sign_using,
     schnorr_verify,
-};
-
-mod random_number_generator;
-pub use random_number_generator::RandomNumberGenerator;
-
-mod secure_random;
-pub use secure_random::{
-    SecureRandomNumberGenerator,
-    random_data,
-    fill_random_data
-};
-
-mod seeded_random;
-pub use seeded_random::{
-    SeededRandomNumberGenerator,
-    fake_random_data,
-    make_fake_random_number_generator
 };
 
 mod error;

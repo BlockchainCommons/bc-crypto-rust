@@ -32,7 +32,8 @@ pub fn ecdsa_verify<T>(public_key: &[u8; ECDSA_PUBLIC_KEY_SIZE], signature: &[u8
 
 #[cfg(test)]
 mod tests {
-    use crate::{ecdsa_public_key_from_private_key, ecdsa_sign, ecdsa_verify, make_fake_random_number_generator, ecdsa_new_private_key_using};
+    use crate::{ecdsa_public_key_from_private_key, ecdsa_sign, ecdsa_verify, ecdsa_new_private_key_using};
+    use bc_rand::make_fake_random_number_generator;
     use hex_literal::hex;
 
     const MESSAGE: &[u8] = b"Ladies and Gentlemen of the class of '99: If I could offer you only one tip for the future, sunscreen would be it.";

@@ -1,5 +1,6 @@
+use bc_rand::{SecureRandomNumberGenerator, RandomNumberGenerator};
 use secp256k1::{Secp256k1, SecretKey, Message, KeyPair, schnorr::Signature, XOnlyPublicKey};
-use crate::{hash::sha256, RandomNumberGenerator, SCHNORR_SIGNATURE_SIZE, SCHNORR_PUBLIC_KEY_SIZE, ECDSA_PRIVATE_KEY_SIZE};
+use crate::{hash::sha256, SCHNORR_SIGNATURE_SIZE, SCHNORR_PUBLIC_KEY_SIZE, ECDSA_PRIVATE_KEY_SIZE};
 
 /// Compute a tagged hash as defined in BIP-340.
 ///
@@ -19,7 +20,7 @@ pub fn schnorr_sign<D1, D2>(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], me
     where D1: AsRef<[u8]>,
           D2: AsRef<[u8]>,
 {
-    let mut rng = crate::SecureRandomNumberGenerator;
+    let mut rng = SecureRandomNumberGenerator;
     schnorr_sign_using(ecdsa_private_key, message, tag, &mut rng)
 }
 
@@ -63,9 +64,10 @@ pub fn schnorr_verify<D1, D2>(schnorr_public_key: &[u8; SCHNORR_PUBLIC_KEY_SIZE]
 
 #[cfg(test)]
 mod tests {
-    use crate::{make_fake_random_number_generator, schnorr_sign_using, ecdsa_new_private_key_using, schnorr_public_key_from_private_key, schnorr_verify};
+    use crate::{schnorr_sign_using, ecdsa_new_private_key_using, schnorr_public_key_from_private_key, schnorr_verify};
 
     use super::tagged_sha256;
+    use bc_rand::make_fake_random_number_generator;
     use hex_literal::hex;
 
     #[test]

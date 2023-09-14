@@ -8,7 +8,7 @@
 
 ## Introduction
 
-`bc-crypto` is a exposes a uniform API for the cryptographic primitives used in higher-level [Blockchain Commons](https://blockchaincommons.com) projects such as [Gordian Envelope](https://crates.io/crates/bc-envelope). The various providers listed below may change, but the API this package provides should be stable.
+`bc-crypto` exposes a uniform API for the cryptographic primitives used in higher-level [Blockchain Commons](https://blockchaincommons.com) projects such as [Gordian Envelope](https://crates.io/crates/bc-envelope). The various providers listed below may change, but the API this package provides should be stable.
 
 | Category | Algorithm | Provider
 |---|---|---
@@ -22,14 +22,12 @@
 | Key Agreement | X25519 | [x25519-dalek](https://crates.io/crates/x25519-dalek)
 | Signing/Verification | ECDSA | [secp256k1](https://crates.io/crates/secp256k1)
 | Signing/Verification | Schnorr | [secp256k1](https://crates.io/crates/secp256k1)
-| Secure Random Number Generation | NA | [getrandom](https://crates.io/crates/getrandom), [rand](https://crates.io/crates/rand)
-| Pseudorandom Number Generation | Xoshiro256** | [rand_xoshiro](https://crates.io/crates/rand_xoshiro)
 
 ## Getting Started
 
 ```toml
 [dependencies]
-bc-crypto = "0.1.4"
+bc-crypto = "0.2.0"
 ```
 
 ## Related Projects
@@ -44,7 +42,7 @@ Higher-level Blockchain Commons projects that use this crate include:
 
 `bc-crypto` is currently in a community review stage. We would appreciate your consideration and/or testing of the libraries. Obviously, let us know if you find any mistakes or problems. But also let us know if the API meets your needs, if the functionality is easy to use, if the usage of Rust feels properly standardized, and if the library solves any problems you are encountering when doing this kind of coding. Also let us know how it could be improved and what else you'd need for this to be just right for your usage. Comments can be posted [to the Gordian Developer Community](https://github.com/BlockchainCommons/Gordian-Developer-Community/discussions/116).
 
-Because this library is still in a community review stage, it should not be used for production tasks until it has had further testing and auditing. 
+Because this library is still in a community review stage, it should not be used for production tasks until it has had further testing and auditing.
 
 See [Blockchain Commons' Development Phases](https://github.com/BlockchainCommons/Community/blob/master/release-path.md).
 

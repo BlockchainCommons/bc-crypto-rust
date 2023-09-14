@@ -1,6 +1,7 @@
+use bc_rand::RandomNumberGenerator;
 use secp256k1::{Secp256k1, SecretKey, PublicKey, KeyPair, constants::{PUBLIC_KEY_SIZE, SECRET_KEY_SIZE, UNCOMPRESSED_PUBLIC_KEY_SIZE}};
 
-use crate::{ECDSA_PRIVATE_KEY_SIZE, RandomNumberGenerator, hash::hkdf_hmac_sha256, SCHNORR_PUBLIC_KEY_SIZE};
+use crate::{ECDSA_PRIVATE_KEY_SIZE, hash::hkdf_hmac_sha256, SCHNORR_PUBLIC_KEY_SIZE};
 
 /// Generate a new ECDSA private key using the given random number generator.
 pub fn ecdsa_new_private_key_using(rng: &mut impl RandomNumberGenerator) -> [u8; SECRET_KEY_SIZE] {
@@ -51,7 +52,8 @@ pub fn schnorr_public_key_from_private_key(private_key: &[u8; ECDSA_PRIVATE_KEY_
 
 #[cfg(test)]
 mod tests {
-    use crate::{ecdsa_public_key_from_private_key, make_fake_random_number_generator, ecdsa_new_private_key_using, ecdsa_decompress_public_key, ecdsa_compress_public_key, schnorr_public_key_from_private_key, ecdsa_derive_private_key};
+    use crate::{ecdsa_public_key_from_private_key, ecdsa_new_private_key_using, ecdsa_decompress_public_key, ecdsa_compress_public_key, schnorr_public_key_from_private_key, ecdsa_derive_private_key};
+    use bc_rand::make_fake_random_number_generator;
     use hex_literal::hex;
 
     #[test]

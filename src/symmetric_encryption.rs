@@ -74,9 +74,10 @@ pub fn aead_chacha20_poly1305_decrypt<D>(
 
 #[cfg(test)]
 mod tests {
+    use bc_rand::random_data;
     use hex_literal::hex;
     use super::{aead_chacha20_poly1305_encrypt_with_aad, aead_chacha20_poly1305_decrypt_with_aad};
-    use crate::{random_data, SYMMETRIC_AUTH_SIZE};
+    use crate::SYMMETRIC_AUTH_SIZE;
 
     const PLAINTEXT: &[u8] = b"Ladies and Gentlemen of the class of '99: If I could offer you only one tip for the future, sunscreen would be it.";
     const AAD: [u8; 12] = hex!("50515253c0c1c2c3c4c5c6c7");

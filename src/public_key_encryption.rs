@@ -1,4 +1,5 @@
-use crate::{RandomNumberGenerator, X25519_PRIVATE_KEY_SIZE, X25519_PUBLIC_KEY_SIZE, hash::hkdf_hmac_sha256, SYMMETRIC_KEY_SIZE};
+use crate::{X25519_PRIVATE_KEY_SIZE, X25519_PUBLIC_KEY_SIZE, hash::hkdf_hmac_sha256, SYMMETRIC_KEY_SIZE};
+use bc_rand::RandomNumberGenerator;
 use x25519_dalek::{PublicKey, StaticSecret};
 
 /// Create a new X25519 private key using the given random number generator.
@@ -37,9 +38,10 @@ pub fn x25519_shared_key(agreement_private_key: &[u8; X25519_PRIVATE_KEY_SIZE], 
 
 #[cfg(test)]
 mod tests {
+    use bc_rand::make_fake_random_number_generator;
     use hex_literal::hex;
 
-    use crate::{make_fake_random_number_generator, x25519_new_agreement_private_key_using, x25519_agreement_public_key_from_private_key, x25519_derive_agreement_private_key, x25519_derive_signing_private_key, x25519_shared_key};
+    use crate::{x25519_new_agreement_private_key_using, x25519_agreement_public_key_from_private_key, x25519_derive_agreement_private_key, x25519_derive_signing_private_key, x25519_shared_key};
 
     #[test]
     fn test_x25519_keys() {
