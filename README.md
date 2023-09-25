@@ -27,7 +27,7 @@
 
 ```toml
 [dependencies]
-bc-crypto = "0.2.0"
+bc-crypto = "0.3.0"
 ```
 
 ## Related Projects
