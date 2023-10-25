@@ -2,9 +2,7 @@ use secp256k1::{SecretKey, Secp256k1, PublicKey, Message, ecdsa::Signature};
 use crate::{hash::double_sha256, ECDSA_PRIVATE_KEY_SIZE, ECDSA_PUBLIC_KEY_SIZE, ECDSA_SIGNATURE_SIZE};
 
 /// ECDSA signs the given message using the given private key.
-pub fn ecdsa_sign<T>(private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: T) -> [u8; ECDSA_SIGNATURE_SIZE]
-    where T: AsRef<[u8]>,
-{
+pub fn ecdsa_sign(private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: impl AsRef<[u8]>) -> [u8; ECDSA_SIGNATURE_SIZE] {
     let secp = Secp256k1::new();
     let sk = SecretKey::from_slice(private_key).expect("32 bytes, within curve order");
     let hash = double_sha256(message.as_ref());
@@ -16,9 +14,7 @@ pub fn ecdsa_sign<T>(private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: T) -> 
 /// Verifies the given ECDSA signature using the given public key.
 ///
 /// Returns `true` if the signature is valid, `false` otherwise.
-pub fn ecdsa_verify<T>(public_key: &[u8; ECDSA_PUBLIC_KEY_SIZE], signature: &[u8; ECDSA_SIGNATURE_SIZE], message: T) -> bool
-    where T: AsRef<[u8]>,
-{
+pub fn ecdsa_verify(public_key: &[u8; ECDSA_PUBLIC_KEY_SIZE], signature: &[u8; ECDSA_SIGNATURE_SIZE], message: impl AsRef<[u8]>) -> bool {
     let secp = Secp256k1::new();
     let pk = PublicKey::from_slice(public_key)
         .expect("33 or 65 bytes, serialized according to the spec");

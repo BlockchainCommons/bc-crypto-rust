@@ -36,9 +36,7 @@ pub fn ecdsa_compress_public_key(uncompressed_public_key: &[u8; UNCOMPRESSED_PUB
 /// Derives the ECDSA private key from the given key material.
 ///
 /// Uses the HKDF algorithm to derive the private key from the given key material.
-pub fn ecdsa_derive_private_key<D>(key_material: D) -> Vec<u8>
-    where D: AsRef<[u8]>
-{
+pub fn ecdsa_derive_private_key(key_material: impl AsRef<[u8]>) -> Vec<u8> {
     hkdf_hmac_sha256(key_material, "signing".as_bytes(), 32)
 }
 

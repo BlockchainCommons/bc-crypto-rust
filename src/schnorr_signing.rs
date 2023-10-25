@@ -5,10 +5,7 @@ use crate::{hash::sha256, SCHNORR_SIGNATURE_SIZE, SCHNORR_PUBLIC_KEY_SIZE, ECDSA
 /// Compute a tagged hash as defined in BIP-340.
 ///
 /// SHA256(SHA256(tag)||SHA256(tag)||msg)
-fn tagged_sha256<D1, D2>(msg: D1, tag: D2) -> [u8; 32]
-    where D1: AsRef<[u8]>,
-          D2: AsRef<[u8]>
-{
+fn tagged_sha256(msg: impl AsRef<[u8]>, tag: impl AsRef<[u8]>) -> [u8; 32] {
     let mut tag_hash = sha256(tag.as_ref()).to_vec();
     tag_hash.extend(tag_hash.clone());
     tag_hash.extend(msg.as_ref());
@@ -16,20 +13,14 @@ fn tagged_sha256<D1, D2>(msg: D1, tag: D2) -> [u8; 32]
 }
 
 /// Schnorr signs the given message using the given private key and user-defined tag.
-pub fn schnorr_sign<D1, D2>(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: D1, tag: D2) -> [u8; SCHNORR_SIGNATURE_SIZE]
-    where D1: AsRef<[u8]>,
-          D2: AsRef<[u8]>,
-{
+pub fn schnorr_sign(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: impl AsRef<[u8]>, tag: impl AsRef<[u8]>) -> [u8; SCHNORR_SIGNATURE_SIZE] {
     let mut rng = SecureRandomNumberGenerator;
     schnorr_sign_using(ecdsa_private_key, message, tag, &mut rng)
 }
 
 /// Schnorr signs the given message using the given private key, user-defined tag,
 /// and random number generator.
-pub fn schnorr_sign_using<D1, D2>(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: D1, tag: D2, rng: &mut impl RandomNumberGenerator) -> [u8; SCHNORR_SIGNATURE_SIZE]
-    where D1: AsRef<[u8]>,
-          D2: AsRef<[u8]>,
-{
+pub fn schnorr_sign_using(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: impl AsRef<[u8]>, tag: impl AsRef<[u8]>, rng: &mut impl RandomNumberGenerator) -> [u8; SCHNORR_SIGNATURE_SIZE] {
     let mut secp = Secp256k1::new();
     let seed: [u8; 32] = rng.random_data(32).try_into().unwrap();
     secp.seeded_randomize(&seed);
@@ -46,10 +37,7 @@ pub fn schnorr_sign_using<D1, D2>(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZ
 
 /// Verifies the given Schnorr signature against the given message, public key,
 /// and user-defined tag, which must match the tag used to create the signature.
-pub fn schnorr_verify<D1, D2>(schnorr_public_key: &[u8; SCHNORR_PUBLIC_KEY_SIZE], schnorr_signature: &[u8; SCHNORR_SIGNATURE_SIZE], message: D1, tag: D2) -> bool
-    where D1: AsRef<[u8]>,
-          D2: AsRef<[u8]>,
-{
+pub fn schnorr_verify(schnorr_public_key: &[u8; SCHNORR_PUBLIC_KEY_SIZE], schnorr_signature: &[u8; SCHNORR_SIGNATURE_SIZE], message: impl AsRef<[u8]>, tag: impl AsRef<[u8]>) -> bool {
     let secp = Secp256k1::new();
     let hash = tagged_sha256(message.as_ref(), tag.as_ref());
     let msg = Message::from_slice(&hash)

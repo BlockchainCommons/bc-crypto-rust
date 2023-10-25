@@ -6,17 +6,13 @@ use hkdf::Hkdf;
 use crate::{CRC32_SIZE, SHA256_SIZE, SHA512_SIZE};
 
 /// Computes the CRC-32 checksum of the given data.
-pub fn crc32<D>(data: D) -> u32
-    where D: AsRef<[u8]>
-{
+pub fn crc32(data: impl AsRef<[u8]>) -> u32 {
     crc32fast::hash(data.as_ref())
 }
 
 /// Computes the SHA-256 hash of the given data, returning the hash as a
 /// 4-byte vector that can be returned in either big-endian or little-endian format.
-pub fn crc32_data_opt<D>(data: D, little_endian: bool) -> [u8; CRC32_SIZE]
-    where D: AsRef<[u8]>
-{
+pub fn crc32_data_opt(data: impl AsRef<[u8]>, little_endian: bool) -> [u8; CRC32_SIZE] {
     let checksum: u32 = crc32(data);
     let mut result = [0u8; 4];
     if little_endian {
@@ -28,16 +24,12 @@ pub fn crc32_data_opt<D>(data: D, little_endian: bool) -> [u8; CRC32_SIZE]
 }
 /// Computes the SHA-256 hash of the given data, returning the hash as a
 /// 4-byte vector in big-endian format.
-pub fn crc32_data<D>(data: D) -> [u8; CRC32_SIZE]
-    where D: AsRef<[u8]>
-{
+pub fn crc32_data(data: impl AsRef<[u8]>) -> [u8; CRC32_SIZE] {
     crc32_data_opt(data, false)
 }
 
 /// Computes the SHA-256 digest of the input buffer.
-pub fn sha256<D>(data: D) -> [u8; SHA256_SIZE]
-    where D: AsRef<[u8]>
-{
+pub fn sha256(data: impl AsRef<[u8]>) -> [u8; SHA256_SIZE] {
     let mut hasher = Sha256::new();
     hasher.update(data);
     let result = hasher.finalize();
@@ -52,9 +44,7 @@ pub fn double_sha256(message: &[u8]) -> [u8; SHA256_SIZE] {
 }
 
 /// Computes the SHA-512 digest of the input buffer.
-pub fn sha512<D>(data: D) -> [u8; SHA512_SIZE]
-    where D: AsRef<[u8]>
-{
+pub fn sha512(data: impl AsRef<[u8]>) -> [u8; SHA512_SIZE] {
     let mut hasher = Sha512::new();
     hasher.update(data);
     let result = hasher.finalize();
@@ -64,11 +54,7 @@ pub fn sha512<D>(data: D) -> [u8; SHA512_SIZE]
 }
 
 /// Computes the HMAC-SHA-256 for the given key and message.
-pub fn hmac_sha256<D1, D2>(key: D1, message: D2) -> [u8; SHA256_SIZE]
-    where
-        D1: AsRef<[u8]>,
-        D2: AsRef<[u8]>
-{
+pub fn hmac_sha256(key: impl AsRef<[u8]>, message: impl AsRef<[u8]>) -> [u8; SHA256_SIZE] {
     let mut mac = Hmac::<Sha256>::new_from_slice(key.as_ref()).unwrap();
     mac.update(message.as_ref());
     let result = mac.finalize();
@@ -76,11 +62,7 @@ pub fn hmac_sha256<D1, D2>(key: D1, message: D2) -> [u8; SHA256_SIZE]
 }
 
 /// Computes the HMAC-SHA-512 for the given key and message.
-pub fn hmac_sha512<D1, D2>(key: D1, message: D2) -> [u8; SHA512_SIZE]
-    where
-        D1: AsRef<[u8]>,
-        D2: AsRef<[u8]>
-{
+pub fn hmac_sha512(key: impl AsRef<[u8]>, message: impl AsRef<[u8]>) -> [u8; SHA512_SIZE] {
     let mut mac = Hmac::<Sha512>::new_from_slice(key.as_ref()).unwrap();
     mac.update(message.as_ref());
     let result = mac.finalize();
@@ -88,22 +70,14 @@ pub fn hmac_sha512<D1, D2>(key: D1, message: D2) -> [u8; SHA512_SIZE]
 }
 
 /// Computes the PBKDF2-HMAC-SHA-256 for the given password.
-pub fn pbkdf2_hmac_sha256<D1, D2>(pass: D1, salt: D2, iterations: u32, key_len: usize) -> Vec<u8>
-    where
-        D1: AsRef<[u8]>,
-        D2: AsRef<[u8]>
-{
+pub fn pbkdf2_hmac_sha256(pass: impl AsRef<[u8]>, salt: impl AsRef<[u8]>, iterations: u32, key_len: usize) -> Vec<u8> {
     let mut key = vec![0u8; key_len];
     pbkdf2_hmac::<Sha256>(pass.as_ref(), salt.as_ref(), iterations, &mut key);
     key
 }
 
 /// Computes the HKDF-HMAC-SHA-256 for the given key material.
-pub fn hkdf_hmac_sha256<D1, D2>(key_material: D1, salt: D2, key_len: usize) -> Vec<u8>
-    where
-        D1: AsRef<[u8]>,
-        D2: AsRef<[u8]>
-{
+pub fn hkdf_hmac_sha256(key_material: impl AsRef<[u8]>, salt: impl AsRef<[u8]>, key_len: usize) -> Vec<u8> {
     let mut key = vec![0u8; key_len];
     let hkdf = Hkdf::<Sha256>::new(Some(salt.as_ref()), key_material.as_ref());
     hkdf.expand(&[], &mut key).unwrap();
