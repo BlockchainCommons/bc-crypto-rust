@@ -2,7 +2,7 @@
 name = "bc-crypto"
 version = "0.3.2"
 edition = "2021"
-description = "Gordian Envelope for Rust."
+description = "A uniform API for cryptographic primitives used in Blockchain Commons projects"
 authors = ["Blockchain Commons"]
 keywords = ["cryptography"]
 repository = "https://github.com/BlockchainCommons/bc-crypto-rust"
