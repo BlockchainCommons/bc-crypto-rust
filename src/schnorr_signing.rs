@@ -1,4 +1,4 @@
-use bc_rand::{SecureRandomNumberGenerator, RandomNumberGenerator};
+use bc_rand::{ RandomNumberGenerator, SecureRandomNumberGenerator};
 use secp256k1::{Secp256k1, SecretKey, Message, KeyPair, schnorr::Signature, XOnlyPublicKey};
 use crate::{hash::sha256, SCHNORR_SIGNATURE_SIZE, SCHNORR_PUBLIC_KEY_SIZE, ECDSA_PRIVATE_KEY_SIZE};
 
@@ -20,7 +20,12 @@ pub fn schnorr_sign(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: i
 
 /// Schnorr signs the given message using the given private key, user-defined tag,
 /// and random number generator.
-pub fn schnorr_sign_using(ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: impl AsRef<[u8]>, tag: impl AsRef<[u8]>, rng: &mut impl RandomNumberGenerator) -> [u8; SCHNORR_SIGNATURE_SIZE] {
+pub fn schnorr_sign_using(
+    ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE],
+    message: impl AsRef<[u8]>,
+    tag: impl AsRef<[u8]>,
+    rng: &mut dyn RandomNumberGenerator,
+) -> [u8; SCHNORR_SIGNATURE_SIZE] {
     let mut secp = Secp256k1::new();
     let seed: [u8; 32] = rng.random_data(32).try_into().unwrap();
     secp.seeded_randomize(&seed);
