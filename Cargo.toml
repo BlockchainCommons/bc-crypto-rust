@@ -13,7 +13,6 @@ documentation = "https://docs.rs/bc-crypto"
 
 [dependencies]
 bc-rand = "^0.1.0"
-rand_core = "0.6.4"
 sha2 = "^0.10.6"
 hmac = "^0.12.1"
 pbkdf2 = "^0.12.1"
