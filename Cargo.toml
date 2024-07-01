@@ -1,6 +1,6 @@
 [package]
 name = "bc-crypto"
-version = "0.3.4"
+version = "0.4.0"
 edition = "2021"
 description = "A uniform API for cryptographic primitives used in Blockchain Commons projects"
 authors = ["Blockchain Commons"]
@@ -12,14 +12,13 @@ categories = ["cryptography"]
 documentation = "https://docs.rs/bc-crypto"
 
 [dependencies]
-bc-rand = "^0.1.0"
+bc-rand = "^0.2.0"
 sha2 = "^0.10.6"
 hmac = "^0.12.1"
 pbkdf2 = "^0.12.1"
 hkdf = "^0.12.3"
 crc32fast = "^1.3.2"
 chacha20poly1305 = "^0.10.1"
-#k256 = {version = "^0.13.1", default-features = false, features = ["ecdsa", "arithmetic"]}
 secp256k1 = "^0.27.0"
 x25519-dalek = {version = "2.0.0-rc.2", features = ["static_secrets"]}
 thiserror = "^1.0.48"
