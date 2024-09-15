@@ -6,7 +6,7 @@ pub fn ecdsa_sign(private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE], message: impl AsRe
     let secp = Secp256k1::new();
     let sk = SecretKey::from_slice(private_key).expect("32 bytes, within curve order");
     let hash = double_sha256(message.as_ref());
-    let msg = Message::from_slice(&hash).unwrap();
+    let msg = Message::from_digest(hash);
     let sig = secp.sign_ecdsa(&msg, &sk);
     sig.serialize_compact().to_vec().try_into().unwrap()
 }
@@ -19,8 +19,7 @@ pub fn ecdsa_verify(public_key: &[u8; ECDSA_PUBLIC_KEY_SIZE], signature: &[u8; E
     let pk = PublicKey::from_slice(public_key)
         .expect("33 or 65 bytes, serialized according to the spec");
     let hash = double_sha256(message.as_ref());
-    let msg = Message::from_slice(&hash)
-        .expect("Message hash must be 32 bytes");
+    let msg = Message::from_digest(hash);
     let sig = Signature::from_compact(signature)
         .expect("64 bytes, signature according to the spec");
     secp.verify_ecdsa(&msg, &sig, &pk).is_ok()

@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/bc-crypto/0.4.0")]
+#![doc(html_root_url = "https://docs.rs/bc-crypto/0.5.0")]
 #![warn(rust_2018_idioms)]
 
 //! # Introduction
@@ -24,7 +24,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! bc-crypto = "0.4.0"
+//! bc-crypto = "0.5.0"
 //! ```
 
 pub const CRC32_SIZE: usize = 4;
@@ -86,6 +86,7 @@ mod schnorr_signing;
 pub use schnorr_signing::{
     schnorr_sign,
     schnorr_sign_using,
+    schnorr_sign_with_aux_rand,
     schnorr_verify,
 };
 

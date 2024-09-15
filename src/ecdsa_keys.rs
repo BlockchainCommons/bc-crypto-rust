@@ -1,5 +1,5 @@
 use bc_rand::RandomNumberGenerator;
-use secp256k1::{Secp256k1, SecretKey, PublicKey, KeyPair, constants::{PUBLIC_KEY_SIZE, SECRET_KEY_SIZE, UNCOMPRESSED_PUBLIC_KEY_SIZE}};
+use secp256k1::{Secp256k1, SecretKey, PublicKey, Keypair, constants::{PUBLIC_KEY_SIZE, SECRET_KEY_SIZE, UNCOMPRESSED_PUBLIC_KEY_SIZE}};
 
 use crate::{ECDSA_PRIVATE_KEY_SIZE, hash::hkdf_hmac_sha256, SCHNORR_PUBLIC_KEY_SIZE};
 
@@ -43,7 +43,7 @@ pub fn ecdsa_derive_private_key(key_material: impl AsRef<[u8]>) -> Vec<u8> {
 /// Derives the Schnorr public key from the given private key.
 pub fn schnorr_public_key_from_private_key(private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE]) -> [u8; SCHNORR_PUBLIC_KEY_SIZE] {
     let secp = Secp256k1::new();
-    let kp: KeyPair = KeyPair::from_seckey_slice(&secp, private_key).unwrap();
+    let kp: Keypair = Keypair::from_seckey_slice(&secp, private_key).unwrap();
     let (x, _) = kp.x_only_public_key();
     x.serialize()
 }
