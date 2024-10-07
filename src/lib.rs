@@ -27,24 +27,20 @@
 //! bc-crypto = "0.5.0"
 //! ```
 
-pub const CRC32_SIZE: usize = 4;
-pub const SHA256_SIZE: usize = 32;
-pub const SHA512_SIZE: usize = 64;
-pub const SYMMETRIC_KEY_SIZE: usize = 32;
-pub const SYMMETRIC_NONCE_SIZE: usize = 12;
-pub const SYMMETRIC_AUTH_SIZE: usize = 16;
-pub const ECDSA_PRIVATE_KEY_SIZE: usize = 32;
-pub const ECDSA_PUBLIC_KEY_SIZE: usize = 33;
-pub const ECDSA_UNCOMPRESSED_PUBLIC_KEY_SIZE: usize = 65;
-pub const ECDSA_MESSAGE_HASH_SIZE: usize = 32;
-pub const ECDSA_SIGNATURE_SIZE : usize = 64;
-pub const SCHNORR_PUBLIC_KEY_SIZE: usize = 32;
-pub const SCHNORR_SIGNATURE_SIZE: usize = 64;
-pub const X25519_PRIVATE_KEY_SIZE: usize = 32;
-pub const X25519_PUBLIC_KEY_SIZE: usize = 32;
-
 /// The `hash` module contains functions for hashing data.
 pub mod hash;
+pub use hash::{
+    sha256,
+    double_sha256,
+    sha512,
+    hmac_sha256,
+    hmac_sha512,
+    pbkdf2_hmac_sha256,
+    hkdf_hmac_sha256,
+    CRC32_SIZE,
+    SHA256_SIZE,
+    SHA512_SIZE,
+};
 
 mod memzero;
 pub use memzero::{memzero, memzero_vec_vec_u8};
@@ -54,7 +50,10 @@ pub use symmetric_encryption::{
     aead_chacha20_poly1305_encrypt_with_aad,
     aead_chacha20_poly1305_encrypt,
     aead_chacha20_poly1305_decrypt_with_aad,
-    aead_chacha20_poly1305_decrypt
+    aead_chacha20_poly1305_decrypt,
+    SYMMETRIC_KEY_SIZE,
+    SYMMETRIC_NONCE_SIZE,
+    SYMMETRIC_AUTH_SIZE,
 };
 
 mod public_key_encryption;
@@ -64,6 +63,8 @@ pub use public_key_encryption:: {
     x25519_derive_agreement_private_key,
     x25519_derive_signing_private_key,
     x25519_shared_key,
+    X25519_PRIVATE_KEY_SIZE,
+    X25519_PUBLIC_KEY_SIZE,
 };
 
 mod ecdsa_keys;
@@ -74,6 +75,12 @@ pub use ecdsa_keys::{
     ecdsa_compress_public_key,
     ecdsa_derive_private_key,
     schnorr_public_key_from_private_key,
+    ECDSA_PRIVATE_KEY_SIZE,
+    ECDSA_PUBLIC_KEY_SIZE,
+    ECDSA_UNCOMPRESSED_PUBLIC_KEY_SIZE,
+    ECDSA_MESSAGE_HASH_SIZE,
+    ECDSA_SIGNATURE_SIZE,
+    SCHNORR_PUBLIC_KEY_SIZE,
 };
 
 mod ecdsa_signing;
@@ -88,6 +95,18 @@ pub use schnorr_signing::{
     schnorr_sign_using,
     schnorr_sign_with_aux_rand,
     schnorr_verify,
+    SCHNORR_SIGNATURE_SIZE,
+};
+
+mod ed25519_signing;
+pub use ed25519_signing::{
+    ed25519_new_private_key_using,
+    ed25519_public_key_from_private_key,
+    ed25519_sign,
+    ed25519_verify,
+    ED25519_SECRET_KEY_LENGTH,
+    ED25519_PUBLIC_KEY_LENGTH,
+    ED25519_SIGNATURE_LENGTH,
 };
 
 mod error;

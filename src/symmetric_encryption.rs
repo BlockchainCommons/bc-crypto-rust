@@ -1,6 +1,9 @@
+use crate::error::Error;
 use chacha20poly1305::{ChaCha20Poly1305, KeyInit, AeadInPlace};
 
-use crate::{Error, SYMMETRIC_KEY_SIZE, SYMMETRIC_NONCE_SIZE, SYMMETRIC_AUTH_SIZE};
+pub const SYMMETRIC_KEY_SIZE: usize = 32;
+pub const SYMMETRIC_NONCE_SIZE: usize = 12;
+pub const SYMMETRIC_AUTH_SIZE: usize = 16;
 
 /// Symmetrically encrypts the given plaintext using ChaCha20-Poly1305 and the given
 /// additional authenticated data (AAD).

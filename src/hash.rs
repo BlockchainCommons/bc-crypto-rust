@@ -3,7 +3,9 @@ use hmac::{Hmac, Mac};
 use pbkdf2::pbkdf2_hmac;
 use hkdf::Hkdf;
 
-use crate::{CRC32_SIZE, SHA256_SIZE, SHA512_SIZE};
+pub const CRC32_SIZE: usize = 4;
+pub const SHA256_SIZE: usize = 32;
+pub const SHA512_SIZE: usize = 64;
 
 /// Computes the CRC-32 checksum of the given data.
 pub fn crc32(data: impl AsRef<[u8]>) -> u32 {

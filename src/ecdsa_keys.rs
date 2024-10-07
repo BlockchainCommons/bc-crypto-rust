@@ -1,7 +1,14 @@
 use bc_rand::RandomNumberGenerator;
 use secp256k1::{Secp256k1, SecretKey, PublicKey, Keypair, constants::{PUBLIC_KEY_SIZE, SECRET_KEY_SIZE, UNCOMPRESSED_PUBLIC_KEY_SIZE}};
 
-use crate::{ECDSA_PRIVATE_KEY_SIZE, hash::hkdf_hmac_sha256, SCHNORR_PUBLIC_KEY_SIZE};
+pub const ECDSA_PRIVATE_KEY_SIZE: usize = 32;
+pub const ECDSA_PUBLIC_KEY_SIZE: usize = 33;
+pub const ECDSA_UNCOMPRESSED_PUBLIC_KEY_SIZE: usize = 65;
+pub const ECDSA_MESSAGE_HASH_SIZE: usize = 32;
+pub const ECDSA_SIGNATURE_SIZE : usize = 64;
+pub const SCHNORR_PUBLIC_KEY_SIZE: usize = 32;
+
+use crate::hash::hkdf_hmac_sha256;
 
 /// Generate a new ECDSA private key using the given random number generator.
 pub fn ecdsa_new_private_key_using(rng: &mut impl RandomNumberGenerator) -> [u8; SECRET_KEY_SIZE] {

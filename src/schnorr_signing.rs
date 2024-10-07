@@ -1,6 +1,8 @@
 use bc_rand::{ RandomNumberGenerator, SecureRandomNumberGenerator};
 use secp256k1::{schnorr::Signature, Keypair, Secp256k1, SecretKey, XOnlyPublicKey};
-use crate::{SCHNORR_SIGNATURE_SIZE, SCHNORR_PUBLIC_KEY_SIZE, ECDSA_PRIVATE_KEY_SIZE};
+use crate::{SCHNORR_PUBLIC_KEY_SIZE, ECDSA_PRIVATE_KEY_SIZE};
+
+pub const SCHNORR_SIGNATURE_SIZE: usize = 64;
 
 pub fn schnorr_sign(
     ecdsa_private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE],
