@@ -104,9 +104,9 @@ pub use ed25519_signing::{
     ed25519_public_key_from_private_key,
     ed25519_sign,
     ed25519_verify,
-    ED25519_SECRET_KEY_LENGTH,
-    ED25519_PUBLIC_KEY_LENGTH,
-    ED25519_SIGNATURE_LENGTH,
+    ED25519_PRIVATE_KEY_SIZE,
+    ED25519_PUBLIC_KEY_SIZE,
+    ED25519_SIGNATURE_SIZE,
 };
 
 mod error;

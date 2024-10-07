@@ -3,31 +3,31 @@ use ed25519_dalek::ed25519::signature::Signer;
 use ed25519_dalek::SigningKey;
 use ed25519_dalek::Signature;
 
-pub const ED25519_PUBLIC_KEY_LENGTH: usize = ed25519_dalek::PUBLIC_KEY_LENGTH;
-pub const ED25519_SECRET_KEY_LENGTH: usize = ed25519_dalek::SECRET_KEY_LENGTH;
-pub const ED25519_SIGNATURE_LENGTH: usize = ed25519_dalek::SIGNATURE_LENGTH;
+pub const ED25519_PUBLIC_KEY_SIZE: usize = ed25519_dalek::PUBLIC_KEY_LENGTH;
+pub const ED25519_PRIVATE_KEY_SIZE: usize = ed25519_dalek::SECRET_KEY_LENGTH;
+pub const ED25519_SIGNATURE_SIZE: usize = ed25519_dalek::SIGNATURE_LENGTH;
 
-pub fn ed25519_new_private_key_using(rng: &mut impl CryptoRngCore) -> [u8; ED25519_SECRET_KEY_LENGTH] {
+pub fn ed25519_new_private_key_using(rng: &mut impl CryptoRngCore) -> [u8; ED25519_PRIVATE_KEY_SIZE] {
     SigningKey::generate(rng).to_bytes()
 }
 
-pub fn ed25519_public_key_from_private_key(private_key: &[u8; ED25519_SECRET_KEY_LENGTH]) -> [u8; ED25519_PUBLIC_KEY_LENGTH] {
+pub fn ed25519_public_key_from_private_key(private_key: &[u8; ED25519_PRIVATE_KEY_SIZE]) -> [u8; ED25519_PUBLIC_KEY_SIZE] {
     let signing_key = SigningKey::from_bytes(private_key);
     signing_key.verifying_key().to_bytes()
 }
 
 pub fn ed25519_sign(
-    private_key: &[u8; ED25519_SECRET_KEY_LENGTH],
+    private_key: &[u8; ED25519_PRIVATE_KEY_SIZE],
     message: &[u8]
-) -> [u8; ED25519_SIGNATURE_LENGTH] {
+) -> [u8; ED25519_SIGNATURE_SIZE] {
     let signing_key = SigningKey::from_bytes(private_key);
     signing_key.try_sign(message).unwrap().to_bytes()
 }
 
 pub fn ed25519_verify(
-    public_key: &[u8; ED25519_PUBLIC_KEY_LENGTH],
+    public_key: &[u8; ED25519_PUBLIC_KEY_SIZE],
     message: &[u8],
-    signature: &[u8; ED25519_SIGNATURE_LENGTH]
+    signature: &[u8; ED25519_SIGNATURE_SIZE]
 ) -> bool {
     let verifying_key = ed25519_dalek::VerifyingKey::from_bytes(public_key).unwrap();
     let signature = Signature::from_bytes(signature);
@@ -36,7 +36,7 @@ pub fn ed25519_verify(
 
 #[cfg(test)]
 mod tests {
-    use crate::{ed25519_new_private_key_using, ed25519_public_key_from_private_key, ed25519_sign, ed25519_verify, ED25519_PUBLIC_KEY_LENGTH, ED25519_SECRET_KEY_LENGTH, ED25519_SIGNATURE_LENGTH};
+    use crate::{ed25519_new_private_key_using, ed25519_public_key_from_private_key, ed25519_sign, ed25519_verify, ED25519_PUBLIC_KEY_SIZE, ED25519_PRIVATE_KEY_SIZE, ED25519_SIGNATURE_SIZE};
     use hex_literal::hex;
 
     #[test]
@@ -58,10 +58,10 @@ mod tests {
     #[test]
     fn test_ed25519_vectors() {
         struct TestVector {
-            secret_key: [u8; ED25519_SECRET_KEY_LENGTH],
-            public_key: [u8; ED25519_PUBLIC_KEY_LENGTH],
+            secret_key: [u8; ED25519_PRIVATE_KEY_SIZE],
+            public_key: [u8; ED25519_PUBLIC_KEY_SIZE],
             message: Vec<u8>,
-            signature: [u8; ED25519_SIGNATURE_LENGTH],
+            signature: [u8; ED25519_SIGNATURE_SIZE],
         }
 
         // Test vectors from RFC 8032
