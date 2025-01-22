@@ -81,6 +81,24 @@ impl KyberPrivateKey {
             KyberLevel::Kyber1024 => Ok(KyberPrivateKey::Kyber1024(Box::new(kyber1024::SecretKey::from_bytes(bytes).map_err(|e| anyhow!(e))?))),
         }
     }
+
+    pub fn decapsulate_shared_secret(&self, ciphertext: &KyberCiphertext) -> KyberSharedSecret {
+        match (self, ciphertext) {
+            (KyberPrivateKey::Kyber512(sk), KyberCiphertext::Kyber512(ct)) => {
+                let ss = kyber512::decapsulate(ct.as_ref(), sk.as_ref());
+                KyberSharedSecret::Kyber512(ss.into())
+            }
+            (KyberPrivateKey::Kyber768(sk), KyberCiphertext::Kyber768(ct)) => {
+                let ss = kyber768::decapsulate(ct.as_ref(), sk.as_ref());
+                KyberSharedSecret::Kyber768(ss.into())
+            }
+            (KyberPrivateKey::Kyber1024(sk), KyberCiphertext::Kyber1024(ct)) => {
+                let ss = kyber1024::decapsulate(ct.as_ref(), sk.as_ref());
+                KyberSharedSecret::Kyber1024(ss.into())
+            }
+            _ => panic!("Kyber level mismatch"),
+        }
+    }
 }
 
 impl std::fmt::Debug for KyberPrivateKey {
@@ -126,6 +144,23 @@ impl KyberPublicKey {
             KyberLevel::Kyber512 => Ok(KyberPublicKey::Kyber512(Box::new(kyber512::PublicKey::from_bytes(bytes).map_err(|e| anyhow!(e))?))),
             KyberLevel::Kyber768 => Ok(KyberPublicKey::Kyber768(Box::new(kyber768::PublicKey::from_bytes(bytes).map_err(|e| anyhow!(e))?))),
             KyberLevel::Kyber1024 => Ok(KyberPublicKey::Kyber1024(Box::new(kyber1024::PublicKey::from_bytes(bytes).map_err(|e| anyhow!(e))?))),
+        }
+    }
+
+    pub fn encapsulate_new_shared_secret(&self) -> (KyberSharedSecret, KyberCiphertext) {
+        match self {
+            KyberPublicKey::Kyber512(pk) => {
+                let (ss, ct) = kyber512::encapsulate(pk.as_ref());
+                (KyberSharedSecret::Kyber512(ss.into()), KyberCiphertext::Kyber512(ct.into()))
+            }
+            KyberPublicKey::Kyber768(pk) => {
+                let (ss, ct) = kyber768::encapsulate(pk.as_ref());
+                (KyberSharedSecret::Kyber768(ss.into()), KyberCiphertext::Kyber768(ct.into()))
+            }
+            KyberPublicKey::Kyber1024(pk) => {
+                let (ss, ct) = kyber1024::encapsulate(pk.as_ref());
+                (KyberSharedSecret::Kyber1024(ss.into()), KyberCiphertext::Kyber1024(ct.into()))
+            }
         }
     }
 }
@@ -251,41 +286,6 @@ impl std::fmt::Debug for KyberCiphertext {
     }
 }
 
-pub fn kyber_encapsulate_new_shared_secret(public_key: &KyberPublicKey) -> (KyberSharedSecret, KyberCiphertext) {
-    match public_key {
-        KyberPublicKey::Kyber512(pk) => {
-            let (ss, ct) = kyber512::encapsulate(pk.as_ref());
-            (KyberSharedSecret::Kyber512(ss.into()), KyberCiphertext::Kyber512(ct.into()))
-        }
-        KyberPublicKey::Kyber768(pk) => {
-            let (ss, ct) = kyber768::encapsulate(pk.as_ref());
-            (KyberSharedSecret::Kyber768(ss.into()), KyberCiphertext::Kyber768(ct.into()))
-        }
-        KyberPublicKey::Kyber1024(pk) => {
-            let (ss, ct) = kyber1024::encapsulate(pk.as_ref());
-            (KyberSharedSecret::Kyber1024(ss.into()), KyberCiphertext::Kyber1024(ct.into()))
-        }
-    }
-}
-
-pub fn kyber_decapsulate_shared_secret(ciphertext: &KyberCiphertext, private_key: &KyberPrivateKey) -> KyberSharedSecret {
-    match (ciphertext, private_key) {
-        (KyberCiphertext::Kyber512(ct), KyberPrivateKey::Kyber512(sk)) => {
-            let ss = kyber512::decapsulate(ct.as_ref(), sk.as_ref());
-            KyberSharedSecret::Kyber512(ss.into())
-        }
-        (KyberCiphertext::Kyber768(ct), KyberPrivateKey::Kyber768(sk)) => {
-            let ss = kyber768::decapsulate(ct.as_ref(), sk.as_ref());
-            KyberSharedSecret::Kyber768(ss.into())
-        }
-        (KyberCiphertext::Kyber1024(ct), KyberPrivateKey::Kyber1024(sk)) => {
-            let ss = kyber1024::decapsulate(ct.as_ref(), sk.as_ref());
-            KyberSharedSecret::Kyber1024(ss.into())
-        }
-        _ => panic!("Kyber level mismatch"),
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -293,36 +293,36 @@ mod tests {
     #[test]
     pub fn test_kyber512() {
         let (private_key, public_key) = kyber_new_keypair(KyberLevel::Kyber512);
-        let (shared_secret_1, ciphertext) = kyber_encapsulate_new_shared_secret(&public_key);
+        let (shared_secret_1, ciphertext) = public_key.encapsulate_new_shared_secret();
         assert_eq!(private_key.size(), 1632);
         assert_eq!(public_key.size(), 800);
         assert_eq!(shared_secret_1.size(), 32);
         assert_eq!(ciphertext.size(), 768);
-        let shared_secret_2 = kyber_decapsulate_shared_secret(&ciphertext, &private_key);
+        let shared_secret_2 = private_key.decapsulate_shared_secret(&ciphertext);
         assert_eq!(shared_secret_1, shared_secret_2);
     }
 
     #[test]
     pub fn test_kyber768() {
         let (private_key, public_key) = kyber_new_keypair(KyberLevel::Kyber768);
-        let (shared_secret_1, ciphertext) = kyber_encapsulate_new_shared_secret(&public_key);
+        let (shared_secret_1, ciphertext) = public_key.encapsulate_new_shared_secret();
         assert_eq!(private_key.size(), 2400);
         assert_eq!(public_key.size(), 1184);
         assert_eq!(shared_secret_1.size(), 32);
         assert_eq!(ciphertext.size(), 1088);
-        let shared_secret_2 = kyber_decapsulate_shared_secret(&ciphertext, &private_key);
+        let shared_secret_2 = private_key.decapsulate_shared_secret(&ciphertext);
         assert_eq!(shared_secret_1, shared_secret_2);
     }
 
     #[test]
     pub fn test_kyber1024() {
         let (private_key, public_key) = kyber_new_keypair(KyberLevel::Kyber1024);
-        let (shared_secret_1, ciphertext) = kyber_encapsulate_new_shared_secret(&public_key);
+        let (shared_secret_1, ciphertext) = public_key.encapsulate_new_shared_secret();
         assert_eq!(private_key.size(), 3168);
         assert_eq!(public_key.size(), 1568);
         assert_eq!(shared_secret_1.size(), 32);
         assert_eq!(ciphertext.size(), 1568);
-        let shared_secret_2 = kyber_decapsulate_shared_secret(&ciphertext, &private_key);
+        let shared_secret_2 = private_key.decapsulate_shared_secret(&ciphertext);
         assert_eq!(shared_secret_1, shared_secret_2);
     }
 }

@@ -117,8 +117,6 @@ pub use kyber::{
     KyberSharedSecret,
     KyberCiphertext,
     kyber_new_keypair,
-    kyber_encapsulate_new_shared_secret,
-    kyber_decapsulate_shared_secret,
     KYBER_SHARED_SECRET_SIZE,
 };
 
