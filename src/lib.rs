@@ -109,28 +109,6 @@ pub use ed25519_signing::{
     ED25519_SIGNATURE_SIZE,
 };
 
-mod kyber;
-pub use kyber::{
-    KyberLevel,
-    KyberPrivateKey,
-    KyberPublicKey,
-    KyberSharedSecret,
-    KyberCiphertext,
-    kyber_new_keypair,
-    KYBER_SHARED_SECRET_SIZE,
-};
-
-mod dilithium;
-pub use dilithium::{
-    DilithiumLevel,
-    DilithiumPrivateKey,
-    DilithiumPublicKey,
-    DilithiumSignature,
-    dilithium_new_keypair,
-    dilithium_sign,
-    dilithium_verify,
-};
-
 #[cfg(test)]
 mod tests {
     #[test]
