@@ -58,9 +58,9 @@ pub use symmetric_encryption::{
 
 mod public_key_encryption;
 pub use public_key_encryption:: {
-    x25519_new_agreement_private_key_using,
-    x25519_agreement_public_key_from_private_key,
-    x25519_derive_agreement_private_key,
+    x25519_new_private_key_using,
+    x25519_public_key_from_private_key,
+    x25519_derive_private_key,
     x25519_derive_signing_private_key,
     x25519_shared_key,
     X25519_PRIVATE_KEY_SIZE,
