@@ -27,10 +27,12 @@
 
 ```toml
 [dependencies]
-bc-crypto = "0.5.0"
+bc-crypto = "0.6.0"
 ```
 
 ## Version History
+
+- **0.6.0, February 4, 2025** - BREAKING CHANGE: Renamed x25519 key methods to clarify their purpose.
 
 - **0.5.0, September 14, 2024** - BREAKING CHANGE: Removed pre-hashing (tagged hash) support for Schnorr signatures, making them BIP-340 compliant. Schnorr signatures produced by previous versions of this crate will now only verify if you pre-hash the image yourself using the BIP-340 method and the tag you previously used, if any.
 
