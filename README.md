@@ -10,24 +10,24 @@
 
 `bc-crypto` exposes a uniform API for the cryptographic primitives used in higher-level [Blockchain Commons](https://blockchaincommons.com) projects such as [Gordian Envelope](https://crates.io/crates/bc-envelope). The various providers listed below may change, but the API this package provides should be stable.
 
-| Category | Algorithm | Provider
-|---|---|---
-| Cryptographic digest | SHA-256 | [sha2](https://crates.io/crates/sha2)
-| Cryptographic digest | SHA-512 | [sha2](https://crates.io/crates/sha2)
-| Hashed Message Authentication Codes | HMAC-SHA-256 | [hmac](https://crates.io/crates/hmac)
-| Hashed Message Authentication Codes | HMAC-SHA-512 | [hmac](https://crates.io/crates/hmac)
-| Password Expansion | PBKDF2-HMAC-SHA-256 | [pbkdf2](https://crates.io/crates/pbkdf2)
-| Key Derivation | HKDF-HMAC-SHA-256 |  [hkdf](https://crates.io/crates/hkdf)
-| Symmetric Encryption | IETF-ChaCha20-Poly1305 | [chacha20poly1305](https://crates.io/crates/chacha20poly1305)
-| Key Agreement | X25519 | [x25519-dalek](https://crates.io/crates/x25519-dalek)
-| Signing/Verification | ECDSA | [secp256k1](https://crates.io/crates/secp256k1)
-| Signing/Verification | Schnorr | [secp256k1](https://crates.io/crates/secp256k1)
+| Category                            | Algorithm              | Provider                                                      |
+| ----------------------------------- | ---------------------- | ------------------------------------------------------------- |
+| Cryptographic digest                | SHA-256                | [sha2](https://crates.io/crates/sha2)                         |
+| Cryptographic digest                | SHA-512                | [sha2](https://crates.io/crates/sha2)                         |
+| Hashed Message Authentication Codes | HMAC-SHA-256           | [hmac](https://crates.io/crates/hmac)                         |
+| Hashed Message Authentication Codes | HMAC-SHA-512           | [hmac](https://crates.io/crates/hmac)                         |
+| Password Expansion                  | PBKDF2-HMAC-SHA-256    | [pbkdf2](https://crates.io/crates/pbkdf2)                     |
+| Key Derivation                      | HKDF-HMAC-SHA-256      | [hkdf](https://crates.io/crates/hkdf)                         |
+| Symmetric Encryption                | IETF-ChaCha20-Poly1305 | [chacha20poly1305](https://crates.io/crates/chacha20poly1305) |
+| Key Agreement                       | X25519                 | [x25519-dalek](https://crates.io/crates/x25519-dalek)         |
+| Signing/Verification                | ECDSA                  | [secp256k1](https://crates.io/crates/secp256k1)               |
+| Signing/Verification                | Schnorr                | [secp256k1](https://crates.io/crates/secp256k1)               |
 
 ## Getting Started
 
 ```toml
 [dependencies]
-bc-crypto = "0.6.0"
+bc-crypto = "0.7.0"
 ```
 
 ## Version History
@@ -40,9 +40,9 @@ bc-crypto = "0.6.0"
 
 Higher-level Blockchain Commons projects that use this crate include:
 
-* [SSKR](https://crates.io/crates/sskr)
-* [Secure Components](https://crates.io/crates/bc-components)
-* [Gordian Envelope](https://crates.io/crates/bc-envelope)
+- [SSKR](https://crates.io/crates/sskr)
+- [Secure Components](https://crates.io/crates/bc-components)
+- [Gordian Envelope](https://crates.io/crates/bc-envelope)
 
 ## Status - Community Review
 
@@ -83,10 +83,10 @@ If your company requires support to use our projects, please feel free to contac
 
 The following people directly contributed to this repository. You can add your name here by getting involved. The first step is learning how to contribute from our [CONTRIBUTING.md](./CONTRIBUTING.md) documentation.
 
-| Name              | Role                | Github                                            | Email                                 | GPG Fingerprint                                    |
-| ----------------- | ------------------- | ------------------------------------------------- | ------------------------------------- | -------------------------------------------------- |
-| Christopher Allen | Principal Architect | [@ChristopherA](https://github.com/ChristopherA)  | \<ChristopherA@LifeWithAlacrity.com\> | FDFE 14A5 4ECB 30FC 5D22  74EF F8D3 6C91 3574 05ED |
-| Wolf McNally      | Lead Researcher/Engineer         | [@WolfMcNally](https://github.com/wolfmcnally)    | \<Wolf@WolfMcNally.com\>              | 9436 52EE 3844 1760 C3DC  3536 4B6C 2FCF 8947 80AE |
+| Name              | Role                     | Github                                           | Email                                 | GPG Fingerprint                                    |
+| ----------------- | ------------------------ | ------------------------------------------------ | ------------------------------------- | -------------------------------------------------- |
+| Christopher Allen | Principal Architect      | [@ChristopherA](https://github.com/ChristopherA) | \<ChristopherA@LifeWithAlacrity.com\> | FDFE 14A5 4ECB 30FC 5D22 74EF F8D3 6C91 3574 05ED  |
+| Wolf McNally      | Lead Researcher/Engineer | [@WolfMcNally](https://github.com/wolfmcnally)   | \<Wolf@WolfMcNally.com\>              | 9436 52EE 3844 1760 C3DC  3536 4B6C 2FCF 8947 80AE |
 
 ## Responsible Disclosure
 
@@ -100,8 +100,8 @@ Please report suspected security vulnerabilities in private via email to Christo
 
 The following keys may be used to communicate sensitive information to developers:
 
-| Name              | Fingerprint                                        |
-| ----------------- | -------------------------------------------------- |
-| Christopher Allen | FDFE 14A5 4ECB 30FC 5D22  74EF F8D3 6C91 3574 05ED |
+| Name              | Fingerprint                                       |
+| ----------------- | ------------------------------------------------- |
+| Christopher Allen | FDFE 14A5 4ECB 30FC 5D22 74EF F8D3 6C91 3574 05ED |
 
 You can import a key by running the following command with that individual’s fingerprint: `gpg --recv-keys "<fingerprint>"` Ensure that you put quotes around fingerprints that contain spaces.
