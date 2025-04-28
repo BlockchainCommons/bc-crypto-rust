@@ -78,10 +78,25 @@ pub fn pbkdf2_hmac_sha256(pass: impl AsRef<[u8]>, salt: impl AsRef<[u8]>, iterat
     key
 }
 
+/// Computes the PBKDF2-HMAC-SHA-512 for the given password.
+pub fn pbkdf2_hmac_sha512(pass: impl AsRef<[u8]>, salt: impl AsRef<[u8]>, iterations: u32, key_len: usize) -> Vec<u8> {
+    let mut key = vec![0u8; key_len];
+    pbkdf2_hmac::<Sha512>(pass.as_ref(), salt.as_ref(), iterations, &mut key);
+    key
+}
+
 /// Computes the HKDF-HMAC-SHA-256 for the given key material.
 pub fn hkdf_hmac_sha256(key_material: impl AsRef<[u8]>, salt: impl AsRef<[u8]>, key_len: usize) -> Vec<u8> {
     let mut key = vec![0u8; key_len];
     let hkdf = Hkdf::<Sha256>::new(Some(salt.as_ref()), key_material.as_ref());
+    hkdf.expand(&[], &mut key).unwrap();
+    key
+}
+
+/// Computes the HKDF-HMAC-SHA-512 for the given key material.
+pub fn hkdf_hmac_sha512(key_material: impl AsRef<[u8]>, salt: impl AsRef<[u8]>, key_len: usize) -> Vec<u8> {
+    let mut key = vec![0u8; key_len];
+    let hkdf = Hkdf::<Sha512>::new(Some(salt.as_ref()), key_material.as_ref());
     hkdf.expand(&[], &mut key).unwrap();
     key
 }

@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/bc-crypto/0.7.0")]
+#![doc(html_root_url = "https://docs.rs/bc-crypto/0.8.0")]
 #![warn(rust_2018_idioms)]
 
 //! # Introduction
@@ -24,7 +24,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! bc-crypto = "0.7.0"
+//! bc-crypto = "0.8.0"
 //! ```
 
 /// The `hash` module contains functions for hashing data.
@@ -43,7 +43,7 @@ pub use hash::{
 };
 
 mod memzero;
-pub use memzero::{memzero, memzero_vec_vec_u8};
+pub use memzero::{ memzero, memzero_vec_vec_u8 };
 
 mod symmetric_encryption;
 pub use symmetric_encryption::{
@@ -57,7 +57,7 @@ pub use symmetric_encryption::{
 };
 
 mod public_key_encryption;
-pub use public_key_encryption:: {
+pub use public_key_encryption::{
     x25519_new_private_key_using,
     x25519_public_key_from_private_key,
     x25519_derive_private_key,
@@ -84,10 +84,7 @@ pub use ecdsa_keys::{
 };
 
 mod ecdsa_signing;
-pub use ecdsa_signing::{
-    ecdsa_sign,
-    ecdsa_verify,
-};
+pub use ecdsa_signing::{ ecdsa_sign, ecdsa_verify };
 
 mod schnorr_signing;
 pub use schnorr_signing::{
@@ -108,6 +105,9 @@ pub use ed25519_signing::{
     ED25519_PUBLIC_KEY_SIZE,
     ED25519_SIGNATURE_SIZE,
 };
+
+mod scrypt;
+pub use scrypt::{ scrypt, scrypt_opt };
 
 #[cfg(test)]
 mod tests {
