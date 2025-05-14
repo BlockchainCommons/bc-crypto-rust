@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/bc-crypto/0.8.0")]
+#![doc(html_root_url = "https://docs.rs/bc-crypto/0.9.0")]
 #![warn(rust_2018_idioms)]
 
 //! # Introduction
@@ -24,7 +24,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! bc-crypto = "0.8.0"
+//! bc-crypto = "0.9.0"
 //! ```
 
 /// The `hash` module contains functions for hashing data.
