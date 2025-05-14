@@ -60,8 +60,8 @@ mod public_key_encryption;
 pub use public_key_encryption::{
     x25519_new_private_key_using,
     x25519_public_key_from_private_key,
-    x25519_derive_private_key,
-    x25519_derive_signing_private_key,
+    derive_agreement_private_key,
+    derive_signing_private_key,
     x25519_shared_key,
     X25519_PRIVATE_KEY_SIZE,
     X25519_PUBLIC_KEY_SIZE,
@@ -108,6 +108,9 @@ pub use ed25519_signing::{
 
 mod scrypt;
 pub use scrypt::{ scrypt, scrypt_opt };
+
+mod argon;
+pub use argon::argon2id;
 
 #[cfg(test)]
 mod tests {
