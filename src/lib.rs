@@ -27,6 +27,9 @@
 //! bc-crypto = "0.9.0"
 //! ```
 
+pub mod error;
+pub use error::{Error, Result};
+
 /// The `hash` module contains functions for hashing data.
 pub mod hash;
 pub use hash::{

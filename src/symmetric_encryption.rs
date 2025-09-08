@@ -1,5 +1,5 @@
-use anyhow::{anyhow, Result};
 use chacha20poly1305::{ChaCha20Poly1305, KeyInit, AeadInPlace};
+use crate::Result;
 
 pub const SYMMETRIC_KEY_SIZE: usize = 32;
 pub const SYMMETRIC_NONCE_SIZE: usize = 12;
@@ -49,7 +49,7 @@ pub fn aead_chacha20_poly1305_decrypt_with_aad<D1, D2>(
 {
     let cipher = ChaCha20Poly1305::new(key.into());
     let mut buffer = ciphertext.as_ref().to_vec();
-    cipher.decrypt_in_place_detached(nonce.into(), aad.as_ref(), &mut buffer, auth.into()).map_err(|_| anyhow!("Decrypt failed"))?;
+    cipher.decrypt_in_place_detached(nonce.into(), aad.as_ref(), &mut buffer, auth.into())?;
     Ok(buffer)
 }
 
