@@ -1,4 +1,5 @@
-use chacha20poly1305::{ChaCha20Poly1305, KeyInit, AeadInPlace};
+use chacha20poly1305::{AeadInOut, ChaCha20Poly1305, KeyInit};
+
 use crate::Result;
 
 pub const SYMMETRIC_KEY_SIZE: usize = 32;
@@ -17,7 +18,7 @@ pub fn aead_chacha20_poly1305_encrypt_with_aad(
 ) -> (Vec<u8>, [u8; SYMMETRIC_AUTH_SIZE]) {
     let cipher = ChaCha20Poly1305::new(key.into());
     let mut buffer = plaintext.as_ref().to_vec();
-    let auth = cipher.encrypt_in_place_detached(nonce.into(), aad.as_ref(), &mut buffer).unwrap();
+    let auth = cipher.encrypt_inout_detached(nonce.into(), aad.as_ref(), buffer.as_mut_slice().into()).unwrap();
     (buffer, auth.to_vec().try_into().unwrap())
 }
 
@@ -49,7 +50,7 @@ pub fn aead_chacha20_poly1305_decrypt_with_aad<D1, D2>(
 {
     let cipher = ChaCha20Poly1305::new(key.into());
     let mut buffer = ciphertext.as_ref().to_vec();
-    cipher.decrypt_in_place_detached(nonce.into(), aad.as_ref(), &mut buffer, auth.into())?;
+    cipher.decrypt_inout_detached(nonce.into(), aad.as_ref(), buffer.as_mut_slice().into(), auth.into())?;
     Ok(buffer)
 }
 
