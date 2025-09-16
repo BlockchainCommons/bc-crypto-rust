@@ -27,10 +27,12 @@
 
 ```toml
 [dependencies]
-bc-crypto = "0.9.0"
+bc-crypto = "0.10.0"
 ```
 
 ## Version History
+
+- **0.10.0, September 15, 2025** - Drop support for anyhow, migrate to thiserror 2.0; Add custom Error and Result types; Update symmetric encryption error handling.
 
 - **0.6.0, February 4, 2025** - BREAKING CHANGE: Renamed x25519 key methods to clarify their purpose.
 
