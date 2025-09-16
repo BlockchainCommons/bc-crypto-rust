@@ -33,84 +33,56 @@ pub use error::{Error, Result};
 /// The `hash` module contains functions for hashing data.
 pub mod hash;
 pub use hash::{
-    sha256,
-    double_sha256,
-    sha512,
-    hmac_sha256,
-    hmac_sha512,
-    pbkdf2_hmac_sha256,
-    hkdf_hmac_sha256,
-    CRC32_SIZE,
-    SHA256_SIZE,
-    SHA512_SIZE,
+    CRC32_SIZE, SHA256_SIZE, SHA512_SIZE, double_sha256, hkdf_hmac_sha256,
+    hmac_sha256, hmac_sha512, pbkdf2_hmac_sha256, sha256, sha512,
 };
 
 mod memzero;
-pub use memzero::{ memzero, memzero_vec_vec_u8 };
+pub use memzero::{memzero, memzero_vec_vec_u8};
 
 mod symmetric_encryption;
 pub use symmetric_encryption::{
-    aead_chacha20_poly1305_encrypt_with_aad,
-    aead_chacha20_poly1305_encrypt,
-    aead_chacha20_poly1305_decrypt_with_aad,
-    aead_chacha20_poly1305_decrypt,
-    SYMMETRIC_KEY_SIZE,
-    SYMMETRIC_NONCE_SIZE,
-    SYMMETRIC_AUTH_SIZE,
+    SYMMETRIC_AUTH_SIZE, SYMMETRIC_KEY_SIZE, SYMMETRIC_NONCE_SIZE,
+    aead_chacha20_poly1305_decrypt, aead_chacha20_poly1305_decrypt_with_aad,
+    aead_chacha20_poly1305_encrypt, aead_chacha20_poly1305_encrypt_with_aad,
 };
 
 mod public_key_encryption;
 pub use public_key_encryption::{
-    x25519_new_private_key_using,
-    x25519_public_key_from_private_key,
-    derive_agreement_private_key,
-    derive_signing_private_key,
+    X25519_PRIVATE_KEY_SIZE, X25519_PUBLIC_KEY_SIZE,
+    derive_agreement_private_key, derive_signing_private_key,
+    x25519_new_private_key_using, x25519_public_key_from_private_key,
     x25519_shared_key,
-    X25519_PRIVATE_KEY_SIZE,
-    X25519_PUBLIC_KEY_SIZE,
 };
 
 mod ecdsa_keys;
 pub use ecdsa_keys::{
-    ecdsa_new_private_key_using,
-    ecdsa_public_key_from_private_key,
-    ecdsa_decompress_public_key,
-    ecdsa_compress_public_key,
-    ecdsa_derive_private_key,
+    ECDSA_MESSAGE_HASH_SIZE, ECDSA_PRIVATE_KEY_SIZE, ECDSA_PUBLIC_KEY_SIZE,
+    ECDSA_SIGNATURE_SIZE, ECDSA_UNCOMPRESSED_PUBLIC_KEY_SIZE,
+    SCHNORR_PUBLIC_KEY_SIZE, ecdsa_compress_public_key,
+    ecdsa_decompress_public_key, ecdsa_derive_private_key,
+    ecdsa_new_private_key_using, ecdsa_public_key_from_private_key,
     schnorr_public_key_from_private_key,
-    ECDSA_PRIVATE_KEY_SIZE,
-    ECDSA_PUBLIC_KEY_SIZE,
-    ECDSA_UNCOMPRESSED_PUBLIC_KEY_SIZE,
-    ECDSA_MESSAGE_HASH_SIZE,
-    ECDSA_SIGNATURE_SIZE,
-    SCHNORR_PUBLIC_KEY_SIZE,
 };
 
 mod ecdsa_signing;
-pub use ecdsa_signing::{ ecdsa_sign, ecdsa_verify };
+pub use ecdsa_signing::{ecdsa_sign, ecdsa_verify};
 
 mod schnorr_signing;
 pub use schnorr_signing::{
-    schnorr_sign,
-    schnorr_sign_using,
-    schnorr_sign_with_aux_rand,
-    schnorr_verify,
-    SCHNORR_SIGNATURE_SIZE,
+    SCHNORR_SIGNATURE_SIZE, schnorr_sign, schnorr_sign_using,
+    schnorr_sign_with_aux_rand, schnorr_verify,
 };
 
 mod ed25519_signing;
 pub use ed25519_signing::{
-    ed25519_new_private_key_using,
-    ed25519_public_key_from_private_key,
-    ed25519_sign,
-    ed25519_verify,
-    ED25519_PRIVATE_KEY_SIZE,
-    ED25519_PUBLIC_KEY_SIZE,
-    ED25519_SIGNATURE_SIZE,
+    ED25519_PRIVATE_KEY_SIZE, ED25519_PUBLIC_KEY_SIZE, ED25519_SIGNATURE_SIZE,
+    ed25519_new_private_key_using, ed25519_public_key_from_private_key,
+    ed25519_sign, ed25519_verify,
 };
 
 mod scrypt;
-pub use scrypt::{ scrypt, scrypt_opt };
+pub use scrypt::{scrypt, scrypt_opt};
 
 mod argon;
 pub use argon::argon2id;
