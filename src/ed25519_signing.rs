@@ -1,24 +1,26 @@
 use chacha20poly1305::aead::rand_core::CryptoRngCore;
-use ed25519_dalek::ed25519::signature::Signer;
-use ed25519_dalek::SigningKey;
-use ed25519_dalek::Signature;
+use ed25519_dalek::{Signature, SigningKey, ed25519::signature::Signer};
 
 pub const ED25519_PUBLIC_KEY_SIZE: usize = ed25519_dalek::PUBLIC_KEY_LENGTH;
 pub const ED25519_PRIVATE_KEY_SIZE: usize = ed25519_dalek::SECRET_KEY_LENGTH;
 pub const ED25519_SIGNATURE_SIZE: usize = ed25519_dalek::SIGNATURE_LENGTH;
 
-pub fn ed25519_new_private_key_using(rng: &mut impl CryptoRngCore) -> [u8; ED25519_PRIVATE_KEY_SIZE] {
+pub fn ed25519_new_private_key_using(
+    rng: &mut impl CryptoRngCore,
+) -> [u8; ED25519_PRIVATE_KEY_SIZE] {
     SigningKey::generate(rng).to_bytes()
 }
 
-pub fn ed25519_public_key_from_private_key(private_key: &[u8; ED25519_PRIVATE_KEY_SIZE]) -> [u8; ED25519_PUBLIC_KEY_SIZE] {
+pub fn ed25519_public_key_from_private_key(
+    private_key: &[u8; ED25519_PRIVATE_KEY_SIZE],
+) -> [u8; ED25519_PUBLIC_KEY_SIZE] {
     let signing_key = SigningKey::from_bytes(private_key);
     signing_key.verifying_key().to_bytes()
 }
 
 pub fn ed25519_sign(
     private_key: &[u8; ED25519_PRIVATE_KEY_SIZE],
-    message: &[u8]
+    message: &[u8],
 ) -> [u8; ED25519_SIGNATURE_SIZE] {
     let signing_key = SigningKey::from_bytes(private_key);
     signing_key.try_sign(message).unwrap().to_bytes()
@@ -27,17 +29,23 @@ pub fn ed25519_sign(
 pub fn ed25519_verify(
     public_key: &[u8; ED25519_PUBLIC_KEY_SIZE],
     message: &[u8],
-    signature: &[u8; ED25519_SIGNATURE_SIZE]
+    signature: &[u8; ED25519_SIGNATURE_SIZE],
 ) -> bool {
-    let verifying_key = ed25519_dalek::VerifyingKey::from_bytes(public_key).unwrap();
+    let verifying_key =
+        ed25519_dalek::VerifyingKey::from_bytes(public_key).unwrap();
     let signature = Signature::from_bytes(signature);
     verifying_key.verify_strict(message, &signature).is_ok()
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{ed25519_new_private_key_using, ed25519_public_key_from_private_key, ed25519_sign, ed25519_verify, ED25519_PUBLIC_KEY_SIZE, ED25519_PRIVATE_KEY_SIZE, ED25519_SIGNATURE_SIZE};
     use hex_literal::hex;
+
+    use crate::{
+        ED25519_PRIVATE_KEY_SIZE, ED25519_PUBLIC_KEY_SIZE,
+        ED25519_SIGNATURE_SIZE, ed25519_new_private_key_using,
+        ed25519_public_key_from_private_key, ed25519_sign, ed25519_verify,
+    };
 
     #[test]
     fn test_ed25519_signing() {
@@ -47,11 +55,26 @@ mod tests {
 
         let mut rng = make_fake_random_number_generator();
         let private_key = ed25519_new_private_key_using(&mut rng);
-        assert_eq!(private_key, hex!("7e061813569f540fb501367178373e8859424ceddfc39407bb066f2953f140dc"));
+        assert_eq!(
+            private_key,
+            hex!(
+                "7e061813569f540fb501367178373e8859424ceddfc39407bb066f2953f140dc"
+            )
+        );
         let public_key = ed25519_public_key_from_private_key(&private_key);
-        assert_eq!(public_key, hex!("ec0aa9766e8c92beae719bdb8383479a6b21a8b39c985cf34e2cb39fb22332f2"));
+        assert_eq!(
+            public_key,
+            hex!(
+                "ec0aa9766e8c92beae719bdb8383479a6b21a8b39c985cf34e2cb39fb22332f2"
+            )
+        );
         let signature = ed25519_sign(&private_key, MESSAGE);
-        assert_eq!(signature, hex!("440172ff3089027029cc746d20d2358a5c0f833a273ecea8af0e343a85466af787288427740598a447f48a12e82b7afcb016af7e07a2f559f0fbff9cbb718806"));
+        assert_eq!(
+            signature,
+            hex!(
+                "440172ff3089027029cc746d20d2358a5c0f833a273ecea8af0e343a85466af787288427740598a447f48a12e82b7afcb016af7e07a2f559f0fbff9cbb718806"
+            )
+        );
         assert!(ed25519_verify(&public_key, MESSAGE, &signature));
     }
 
@@ -94,8 +117,15 @@ mod tests {
         ];
 
         for test_vector in test_vectors.iter() {
-            assert_eq!(ed25519_public_key_from_private_key(&test_vector.secret_key), test_vector.public_key);
-            assert!(ed25519_verify(&test_vector.public_key, &test_vector.message, &test_vector.signature));
+            assert_eq!(
+                ed25519_public_key_from_private_key(&test_vector.secret_key),
+                test_vector.public_key
+            );
+            assert!(ed25519_verify(
+                &test_vector.public_key,
+                &test_vector.message,
+                &test_vector.signature
+            ));
         }
     }
 }

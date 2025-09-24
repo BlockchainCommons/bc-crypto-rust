@@ -6,7 +6,8 @@ use scrypt::scrypt as scrypt_hash;
 ///
 /// * `pass` - The password or passphrase as a byte slice.
 /// * `salt` - The salt as a byte slice.
-/// * `output_len` - The desired length of the derived key in bytes. Must be greater than 9 and less than or equal to 64.
+/// * `output_len` - The desired length of the derived key in bytes. Must be
+///   greater than 9 and less than or equal to 64.
 ///
 /// # Returns
 ///
@@ -26,7 +27,8 @@ use scrypt::scrypt as scrypt_hash;
 pub fn scrypt(
     pass: impl AsRef<[u8]>,
     salt: impl AsRef<[u8]>,
-    output_len: usize, // Must be greater than `9` and less than or equal to `64`
+    output_len: usize, /* Must be greater than `9` and less than or equal to
+                        * `64` */
 ) -> Vec<u8> {
     let params = scrypt::Params::recommended();
     let mut output = vec![0u8; output_len];
@@ -38,10 +40,11 @@ pub fn scrypt(
 pub fn scrypt_opt(
     pass: impl AsRef<[u8]>,
     salt: impl AsRef<[u8]>,
-    output_len: usize, // Must be greater than `9` and less than or equal to `64`
+    output_len: usize, /* Must be greater than `9` and less than or equal to
+                        * `64` */
     log_n: u8, // Must be less than `64`
-    r: u32, // Must be greater than 0 and less than or equal to `4294967295`
-    p: u32, // Must be greater than 0 and less than `4294967295`
+    r: u32,    // Must be greater than 0 and less than or equal to `4294967295`
+    p: u32,    // Must be greater than 0 and less than `4294967295`
 ) -> Vec<u8> {
     let params = scrypt::Params::new(log_n, r, p, output_len)
         .expect("Invalid Scrypt parameters");

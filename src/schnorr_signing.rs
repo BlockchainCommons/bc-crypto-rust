@@ -1,6 +1,9 @@
-use bc_rand::{ RandomNumberGenerator, SecureRandomNumberGenerator};
-use secp256k1::{schnorr::Signature, Keypair, Secp256k1, SecretKey, XOnlyPublicKey};
-use crate::{SCHNORR_PUBLIC_KEY_SIZE, ECDSA_PRIVATE_KEY_SIZE};
+use bc_rand::{RandomNumberGenerator, SecureRandomNumberGenerator};
+use secp256k1::{
+    Keypair, Secp256k1, SecretKey, XOnlyPublicKey, schnorr::Signature,
+};
+
+use crate::{ECDSA_PRIVATE_KEY_SIZE, SCHNORR_PUBLIC_KEY_SIZE};
 
 pub const SCHNORR_SIGNATURE_SIZE: usize = 64;
 
@@ -30,7 +33,8 @@ pub fn schnorr_sign_with_aux_rand(
     let sk = SecretKey::from_slice(ecdsa_private_key)
         .expect("32 bytes, within curve order");
     let keypair = Keypair::from_secret_key(&secp, &sk);
-    let sig: Signature = secp.sign_schnorr_with_aux_rand(message.as_ref(), &keypair, aux_rand);
+    let sig: Signature =
+        secp.sign_schnorr_with_aux_rand(message.as_ref(), &keypair, aux_rand);
     sig.as_ref().to_vec().try_into().unwrap()
 }
 
@@ -49,27 +53,35 @@ pub fn schnorr_verify(
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        ecdsa_new_private_key_using,
-        schnorr_public_key_from_private_key,
-        schnorr_sign_using,
-        schnorr_sign_with_aux_rand,
-        schnorr_verify,
-    };
-
     use bc_rand::make_fake_random_number_generator;
     use hex_literal::hex;
+
+    use crate::{
+        ecdsa_new_private_key_using, schnorr_public_key_from_private_key,
+        schnorr_sign_using, schnorr_sign_with_aux_rand, schnorr_verify,
+    };
 
     #[test]
     fn test_schnorr_sign() {
         let mut rng = make_fake_random_number_generator();
         let private_key = ecdsa_new_private_key_using(&mut rng);
-        assert_eq!(&private_key, &hex!("7eb559bbbf6cce2632cf9f194aeb50943de7e1cbad54dcfab27a42759f5e2fed"));
+        assert_eq!(
+            &private_key,
+            &hex!(
+                "7eb559bbbf6cce2632cf9f194aeb50943de7e1cbad54dcfab27a42759f5e2fed"
+            )
+        );
         let message = b"Hello World";
         let sig = schnorr_sign_using(&private_key, message, &mut rng);
         assert_eq!(sig.len(), 64);
-        assert_eq!(sig, hex!("8f6ec4edbe1a6d96edfc5f15e18e06a6e2559a3426c52d2c38fec17fe7e0cafc95177206d018662a279f2b571224cf07006939fc25d0cae7a7e7b44a4b25f543"));
-        let schnorr_public_key = schnorr_public_key_from_private_key(&private_key);
+        assert_eq!(
+            sig,
+            hex!(
+                "8f6ec4edbe1a6d96edfc5f15e18e06a6e2559a3426c52d2c38fec17fe7e0cafc95177206d018662a279f2b571224cf07006939fc25d0cae7a7e7b44a4b25f543"
+            )
+        );
+        let schnorr_public_key =
+            schnorr_public_key_from_private_key(&private_key);
         assert!(schnorr_verify(&schnorr_public_key, &sig, message));
     }
 
@@ -83,13 +95,21 @@ mod tests {
     }
 
     fn run_test_vector(test: TestVector) {
-        if let (Some(secret_key), Some(aux_rand)) = (test.secret_key, test.aux_rand) {
-            let actual_public_key = schnorr_public_key_from_private_key(&secret_key);
+        if let (Some(secret_key), Some(aux_rand)) =
+            (test.secret_key, test.aux_rand)
+        {
+            let actual_public_key =
+                schnorr_public_key_from_private_key(&secret_key);
             assert_eq!(&actual_public_key, &test.public_key);
-            let actual_signature = schnorr_sign_with_aux_rand(&secret_key, &test.message, &aux_rand);
+            let actual_signature = schnorr_sign_with_aux_rand(
+                &secret_key,
+                &test.message,
+                &aux_rand,
+            );
             assert_eq!(&actual_signature, &test.signature);
         }
-        let verified = schnorr_verify(&test.public_key, &test.signature, &test.message);
+        let verified =
+            schnorr_verify(&test.public_key, &test.signature, &test.message);
         assert_eq!(verified, test.verifies);
     }
 
@@ -282,11 +302,19 @@ mod tests {
     #[test]
     fn test_15() {
         run_test_vector(TestVector {
-            secret_key: Some(hex!("0340034003400340034003400340034003400340034003400340034003400340")),
-            public_key: hex!("778CAA53B4393AC467774D09497A87224BF9FAB6F6E68B23086497324D6FD117"),
-            aux_rand: Some(hex!("0000000000000000000000000000000000000000000000000000000000000000")),
+            secret_key: Some(hex!(
+                "0340034003400340034003400340034003400340034003400340034003400340"
+            )),
+            public_key: hex!(
+                "778CAA53B4393AC467774D09497A87224BF9FAB6F6E68B23086497324D6FD117"
+            ),
+            aux_rand: Some(hex!(
+                "0000000000000000000000000000000000000000000000000000000000000000"
+            )),
             message: hex!("").into(),
-            signature: hex!("71535DB165ECD9FBBC046E5FFAEA61186BB6AD436732FCCC25291A55895464CF6069CE26BF03466228F19A3A62DB8A649F2D560FAC652827D1AF0574E427AB63"),
+            signature: hex!(
+                "71535DB165ECD9FBBC046E5FFAEA61186BB6AD436732FCCC25291A55895464CF6069CE26BF03466228F19A3A62DB8A649F2D560FAC652827D1AF0574E427AB63"
+            ),
             verifies: true,
         });
     }
@@ -294,11 +322,19 @@ mod tests {
     #[test]
     fn test_16() {
         run_test_vector(TestVector {
-            secret_key: Some(hex!("0340034003400340034003400340034003400340034003400340034003400340")),
-            public_key: hex!("778CAA53B4393AC467774D09497A87224BF9FAB6F6E68B23086497324D6FD117"),
-            aux_rand: Some(hex!("0000000000000000000000000000000000000000000000000000000000000000")),
+            secret_key: Some(hex!(
+                "0340034003400340034003400340034003400340034003400340034003400340"
+            )),
+            public_key: hex!(
+                "778CAA53B4393AC467774D09497A87224BF9FAB6F6E68B23086497324D6FD117"
+            ),
+            aux_rand: Some(hex!(
+                "0000000000000000000000000000000000000000000000000000000000000000"
+            )),
             message: hex!("11").into(),
-            signature: hex!("08A20A0AFEF64124649232E0693C583AB1B9934AE63B4C3511F3AE1134C6A303EA3173BFEA6683BD101FA5AA5DBC1996FE7CACFC5A577D33EC14564CEC2BACBF"),
+            signature: hex!(
+                "08A20A0AFEF64124649232E0693C583AB1B9934AE63B4C3511F3AE1134C6A303EA3173BFEA6683BD101FA5AA5DBC1996FE7CACFC5A577D33EC14564CEC2BACBF"
+            ),
             verifies: true,
         });
     }
@@ -306,11 +342,19 @@ mod tests {
     #[test]
     fn test_17() {
         run_test_vector(TestVector {
-            secret_key: Some(hex!("0340034003400340034003400340034003400340034003400340034003400340")),
-            public_key: hex!("778CAA53B4393AC467774D09497A87224BF9FAB6F6E68B23086497324D6FD117"),
-            aux_rand: Some(hex!("0000000000000000000000000000000000000000000000000000000000000000")),
+            secret_key: Some(hex!(
+                "0340034003400340034003400340034003400340034003400340034003400340"
+            )),
+            public_key: hex!(
+                "778CAA53B4393AC467774D09497A87224BF9FAB6F6E68B23086497324D6FD117"
+            ),
+            aux_rand: Some(hex!(
+                "0000000000000000000000000000000000000000000000000000000000000000"
+            )),
             message: hex!("0102030405060708090A0B0C0D0E0F1011").into(),
-            signature: hex!("5130F39A4059B43BC7CAC09A19ECE52B5D8699D1A71E3C52DA9AFDB6B50AC370C4A482B77BF960F8681540E25B6771ECE1E5A37FD80E5A51897C5566A97EA5A5"),
+            signature: hex!(
+                "5130F39A4059B43BC7CAC09A19ECE52B5D8699D1A71E3C52DA9AFDB6B50AC370C4A482B77BF960F8681540E25B6771ECE1E5A37FD80E5A51897C5566A97EA5A5"
+            ),
             verifies: true,
         });
     }
@@ -330,8 +374,12 @@ mod tests {
     #[test]
     fn test_verify_tweaked() {
         let message = b"message";
-        let public_key = hex!("b1ca6327b48b3f2f11c80b460aeff6934cbf1705083792108be9545b53818472");
-        let signature = hex!("cddfdf12ffa1698b2fa7449bd6aa4581cdab05205864cddaba1a137a1db132ea2f4255a81199c58241087036f5b66ec4303409cd7d760039729f78f19db004dc");
+        let public_key = hex!(
+            "b1ca6327b48b3f2f11c80b460aeff6934cbf1705083792108be9545b53818472"
+        );
+        let signature = hex!(
+            "cddfdf12ffa1698b2fa7449bd6aa4581cdab05205864cddaba1a137a1db132ea2f4255a81199c58241087036f5b66ec4303409cd7d760039729f78f19db004dc"
+        );
         let verified = schnorr_verify(&public_key, &signature, message);
         println!("verified: {:?}", verified);
     }

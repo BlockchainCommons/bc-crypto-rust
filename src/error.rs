@@ -8,9 +8,7 @@ pub enum Error {
 }
 
 impl From<AeadError> for Error {
-    fn from(error: AeadError) -> Self {
-        Error::Aead(error)
-    }
+    fn from(error: AeadError) -> Self { Error::Aead(error) }
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

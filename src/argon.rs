@@ -1,6 +1,10 @@
 use argon2::Argon2;
 
-pub fn argon2id(pass: impl AsRef<[u8]>, salt: impl AsRef<[u8]>, output_len: usize) -> Vec<u8> {
+pub fn argon2id(
+    pass: impl AsRef<[u8]>,
+    salt: impl AsRef<[u8]>,
+    output_len: usize,
+) -> Vec<u8> {
     let mut output = vec![0u8; output_len];
     Argon2::default()
         .hash_password_into(pass.as_ref(), salt.as_ref(), &mut output)
