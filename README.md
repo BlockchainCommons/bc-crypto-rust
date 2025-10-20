@@ -27,10 +27,12 @@
 
 ```toml
 [dependencies]
-bc-crypto = "0.10.0"
+bc-crypto = "0.11.0"
 ```
 
 ## Version History
+
+- **0.11.0, October 19, 2025** - Align to dependencies.
 
 - **0.10.0, September 15, 2025** - Drop support for anyhow, migrate to thiserror 2.0; Add custom Error and Result types; Update symmetric encryption error handling.
 
