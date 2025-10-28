@@ -1,13 +1,13 @@
-use chacha20poly1305::aead::rand_core::CryptoRngCore;
-use ed25519_dalek::{Signature, SigningKey, ed25519::signature::Signer};
+use ed25519_dalek::ed25519::signature::Signer;
+use ed25519_dalek::SigningKey;
+use ed25519_dalek::Signature;
+use rand::CryptoRng;
 
 pub const ED25519_PUBLIC_KEY_SIZE: usize = ed25519_dalek::PUBLIC_KEY_LENGTH;
 pub const ED25519_PRIVATE_KEY_SIZE: usize = ed25519_dalek::SECRET_KEY_LENGTH;
 pub const ED25519_SIGNATURE_SIZE: usize = ed25519_dalek::SIGNATURE_LENGTH;
 
-pub fn ed25519_new_private_key_using(
-    rng: &mut impl CryptoRngCore,
-) -> [u8; ED25519_PRIVATE_KEY_SIZE] {
+pub fn ed25519_new_private_key_using(rng: &mut impl CryptoRng) -> [u8; ED25519_PRIVATE_KEY_SIZE] {
     SigningKey::generate(rng).to_bytes()
 }
 

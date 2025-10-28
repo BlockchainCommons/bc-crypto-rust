@@ -1,4 +1,4 @@
-use chacha20poly1305::{AeadInPlace, ChaCha20Poly1305, KeyInit};
+use chacha20poly1305::{AeadInOut, ChaCha20Poly1305, KeyInit};
 
 use crate::Result;
 
@@ -19,7 +19,11 @@ pub fn aead_chacha20_poly1305_encrypt_with_aad(
     let cipher = ChaCha20Poly1305::new(key.into());
     let mut buffer = plaintext.as_ref().to_vec();
     let auth = cipher
-        .encrypt_in_place_detached(nonce.into(), aad.as_ref(), &mut buffer)
+        .encrypt_inout_detached(
+            nonce.into(),
+            aad.as_ref(),
+            buffer.as_mut_slice().into()
+        )
         .unwrap();
     (buffer, auth.to_vec().try_into().unwrap())
 }
@@ -52,11 +56,11 @@ where
 {
     let cipher = ChaCha20Poly1305::new(key.into());
     let mut buffer = ciphertext.as_ref().to_vec();
-    cipher.decrypt_in_place_detached(
+    cipher.decrypt_inout_detached(
         nonce.into(),
         aad.as_ref(),
-        &mut buffer,
-        auth.into(),
+        buffer.as_mut_slice().into(),
+        auth.into()
     )?;
     Ok(buffer)
 }
