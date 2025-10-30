@@ -55,7 +55,9 @@ pub use public_key_encryption::{
     x25519_shared_key,
 };
 
+#[cfg(feature = "secp256k1")]
 mod ecdsa_keys;
+#[cfg(feature = "secp256k1")]
 pub use ecdsa_keys::{
     ECDSA_MESSAGE_HASH_SIZE, ECDSA_PRIVATE_KEY_SIZE, ECDSA_PUBLIC_KEY_SIZE,
     ECDSA_SIGNATURE_SIZE, ECDSA_UNCOMPRESSED_PUBLIC_KEY_SIZE,
@@ -65,10 +67,14 @@ pub use ecdsa_keys::{
     schnorr_public_key_from_private_key,
 };
 
+#[cfg(feature = "secp256k1")]
 mod ecdsa_signing;
+#[cfg(feature = "secp256k1")]
 pub use ecdsa_signing::{ecdsa_sign, ecdsa_verify};
 
+#[cfg(feature = "secp256k1")]
 mod schnorr_signing;
+#[cfg(feature = "secp256k1")]
 pub use schnorr_signing::{
     SCHNORR_SIGNATURE_SIZE, schnorr_sign, schnorr_sign_using,
     schnorr_sign_with_aux_rand, schnorr_verify,
