@@ -80,7 +80,9 @@ pub use schnorr_signing::{
     schnorr_sign_with_aux_rand, schnorr_verify,
 };
 
+#[cfg(feature = "ed25519")]
 mod ed25519_signing;
+#[cfg(feature = "ed25519")]
 pub use ed25519_signing::{
     ED25519_PRIVATE_KEY_SIZE, ED25519_PUBLIC_KEY_SIZE, ED25519_SIGNATURE_SIZE,
     ed25519_new_private_key_using, ed25519_public_key_from_private_key,

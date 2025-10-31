@@ -30,6 +30,7 @@ section "No Default Features"
 cargo test --no-default-features > /dev/null
 
 test_only_features "secp256k1"
+test_only_features "ed25519"
 
 section "Doc Tests"
 cargo test --doc > /dev/null
