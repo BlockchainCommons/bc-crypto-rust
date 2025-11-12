@@ -27,10 +27,12 @@
 
 ```toml
 [dependencies]
-bc-crypto = "0.12.0"
+bc-crypto = "0.13.0"
 ```
 
 ## Version History
+
+- **0.13.0, November 12, 2025** - Align to dependencies.
 
 - **0.12.0, November 3, 2025** - Add feature gates for secp256k1 and ed25519.
 
