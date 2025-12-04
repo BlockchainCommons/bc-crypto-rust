@@ -27,7 +27,7 @@ pub fn ecdsa_public_key_from_private_key(
     private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE],
 ) -> [u8; PUBLIC_KEY_SIZE] {
     let secp = Secp256k1::new();
-    let private_key = SecretKey::from_slice(private_key)
+    let private_key = SecretKey::from_byte_array(*private_key)
         .expect("32 bytes, within curve order");
     let public_key = PublicKey::from_secret_key(&secp, &private_key);
     public_key.serialize()
@@ -66,7 +66,8 @@ pub fn schnorr_public_key_from_private_key(
     private_key: &[u8; ECDSA_PRIVATE_KEY_SIZE],
 ) -> [u8; SCHNORR_PUBLIC_KEY_SIZE] {
     let secp = Secp256k1::new();
-    let kp: Keypair = Keypair::from_seckey_slice(&secp, private_key).unwrap();
+    let kp: Keypair =
+        Keypair::from_seckey_byte_array(&secp, *private_key).unwrap();
     let (x, _) = kp.x_only_public_key();
     x.serialize()
 }

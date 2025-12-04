@@ -30,7 +30,7 @@ pub fn schnorr_sign_with_aux_rand(
     aux_rand: &[u8; 32],
 ) -> [u8; SCHNORR_SIGNATURE_SIZE] {
     let secp = Secp256k1::new();
-    let sk = SecretKey::from_slice(ecdsa_private_key)
+    let sk = SecretKey::from_byte_array(*ecdsa_private_key)
         .expect("32 bytes, within curve order");
     let keypair = Keypair::from_secret_key(&secp, &sk);
     let sig: Signature =
@@ -44,9 +44,8 @@ pub fn schnorr_verify(
     message: impl AsRef<[u8]>,
 ) -> bool {
     let secp = Secp256k1::new();
-    let sig = Signature::from_slice(schnorr_signature)
-        .expect("Signature must be 64 bytes");
-    let pk = XOnlyPublicKey::from_slice(schnorr_public_key)
+    let sig = Signature::from_byte_array(*schnorr_signature);
+    let pk = XOnlyPublicKey::from_byte_array(*schnorr_public_key)
         .expect("32 bytes, serialized according to the spec");
     secp.verify_schnorr(&sig, message.as_ref(), &pk).is_ok()
 }

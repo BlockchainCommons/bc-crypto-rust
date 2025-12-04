@@ -11,11 +11,11 @@ pub fn ecdsa_sign(
     message: impl AsRef<[u8]>,
 ) -> [u8; ECDSA_SIGNATURE_SIZE] {
     let secp = Secp256k1::new();
-    let sk = SecretKey::from_slice(private_key)
+    let sk = SecretKey::from_byte_array(*private_key)
         .expect("32 bytes, within curve order");
     let hash = double_sha256(message.as_ref());
     let msg = Message::from_digest(hash);
-    let sig = secp.sign_ecdsa(&msg, &sk);
+    let sig = secp.sign_ecdsa(msg, &sk);
     sig.serialize_compact().to_vec().try_into().unwrap()
 }
 
@@ -34,7 +34,7 @@ pub fn ecdsa_verify(
     let msg = Message::from_digest(hash);
     let sig = Signature::from_compact(signature)
         .expect("64 bytes, signature according to the spec");
-    secp.verify_ecdsa(&msg, &sig, &pk).is_ok()
+    secp.verify_ecdsa(msg, &sig, &pk).is_ok()
 }
 
 #[cfg(test)]

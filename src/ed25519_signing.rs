@@ -43,36 +43,39 @@ mod tests {
 
     use crate::{
         ED25519_PRIVATE_KEY_SIZE, ED25519_PUBLIC_KEY_SIZE,
-        ED25519_SIGNATURE_SIZE, ed25519_new_private_key_using,
-        ed25519_public_key_from_private_key, ed25519_sign, ed25519_verify,
+        ED25519_SIGNATURE_SIZE, ed25519_public_key_from_private_key,
+        ed25519_sign, ed25519_verify,
     };
 
     #[test]
     fn test_ed25519_signing() {
-        use bc_rand::make_fake_random_number_generator;
+        use bc_rand::fake_random_data;
 
         const MESSAGE: &[u8] = b"Ladies and Gentlemen of the class of '99: If I could offer you only one tip for the future, sunscreen would be it.";
 
-        let mut rng = make_fake_random_number_generator();
-        let private_key = ed25519_new_private_key_using(&mut rng);
+        // Generate deterministic random bytes for the private key
+        let private_key: [u8; ED25519_PRIVATE_KEY_SIZE] =
+            fake_random_data(ED25519_PRIVATE_KEY_SIZE)
+                .try_into()
+                .unwrap();
         assert_eq!(
             private_key,
             hex!(
-                "7e061813569f540fb501367178373e8859424ceddfc39407bb066f2953f140dc"
+                "7eb559bbbf6cce2632cf9f194aeb50943de7e1cbad54dcfab27a42759f5e2fed"
             )
         );
         let public_key = ed25519_public_key_from_private_key(&private_key);
         assert_eq!(
             public_key,
             hex!(
-                "ec0aa9766e8c92beae719bdb8383479a6b21a8b39c985cf34e2cb39fb22332f2"
+                "76f863e1024d8ff6cd8ad56c434e01dbbf2999cfc2f132fc7f41ca19fed7a97c"
             )
         );
         let signature = ed25519_sign(&private_key, MESSAGE);
         assert_eq!(
             signature,
             hex!(
-                "440172ff3089027029cc746d20d2358a5c0f833a273ecea8af0e343a85466af787288427740598a447f48a12e82b7afcb016af7e07a2f559f0fbff9cbb718806"
+                "647cc65243e8a61dc273242b13008994e4658a7e0bcbb1fd621b01dad2ddf7577901c4c4d4ea484ae5ca3172c4b8a75877bd7d5349a7055acdc023b04fcd0406"
             )
         );
         assert!(ed25519_verify(&public_key, MESSAGE, &signature));
