@@ -27,10 +27,17 @@
 
 ```toml
 [dependencies]
-bc-crypto = "0.13.0"
+bc-crypto = "0.14.0"
 ```
 
 ## Version History
+
+- **0.14.0, December 4, 2025**
+  - Update `bc-rand` dependency to 0.5.0.
+  - Update `rand` dependency to 0.9.2.
+  - Update `secp256k1` dependency to 0.31.1.
+  - Adapt to new `secp256k1` API (`from_byte_array` methods).
+  - Update test fixtures for new `bc-rand` RNG behavior.
 
 - **0.13.0, November 12, 2025** - Align to dependencies.
 
